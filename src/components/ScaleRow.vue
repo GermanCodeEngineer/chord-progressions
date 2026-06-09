@@ -27,15 +27,16 @@
         :key="chord.id"
         :chord="chord"
         :index="isThisPlaying ? i : -1"
+        v-show="chord.isOctavatedBase ? finishWithBase : true"
       />
     </div>
   </div>
 </template>
 
-<script setup>
+<script setup lang="js"> // Convert to TS
 import { computed, ref } from 'vue'
 import ChordButton from './ChordButton.vue'
-import { playProgression, stopProgression, isPlaying, playingChordId } from '../useAudio.ts'
+import { playProgression, stopProgression, isPlaying, finishWithBase } from '../useAudio.ts'
 import { DEFAULT_BPM } from '../musicTheory.ts'
 
 const props = defineProps({

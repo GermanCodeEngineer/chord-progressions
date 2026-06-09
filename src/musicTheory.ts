@@ -90,16 +90,24 @@ const DIATONIC_QUALITIES = {
 
 /**
  * Build chords for a given root note + scale type
- * TODO: Make class for result
+ * TODO: Make class for result?
  */
-export function buildScaleChords(rootNote: string, scaleType: keyof typeof SCALE_INTERVALS): object {
+export function buildScaleChords(rootNote: string, scaleType: keyof typeof SCALE_INTERVALS): {
+  id: string,
+  root: string | undefined,
+  quality: keyof typeof CHORD_TYPES,
+  label: string,
+  roman: string,
+  noteFreqs: { note: string | undefined, octave: number }[],
+  isOctavatedBase: boolean,
+}[] {
   const scale = SCALE_INTERVALS[scaleType]
   if (!scale) return []
 
   const rootIdx = NOTES.indexOf(rootNote)
   const qualities = (DIATONIC_QUALITIES[scaleType] || []) as (keyof typeof CHORD_TYPES)[]
 
-  return scale.intervals.map((interval, degree) => {
+  const scaleChords = scale.intervals.map((interval, degree) => {
     const noteIdx = (rootIdx + interval) % 12
     const note = NOTES[noteIdx]
     const quality = qualities[degree] || 'major'
@@ -107,10 +115,11 @@ export function buildScaleChords(rootNote: string, scaleType: keyof typeof SCALE
     const roman = ROMAN[degree] || (degree + 1).toString()
 
     // Get actual note frequencies for all chord tones
-    const noteFreqs = chordType.intervals.map(ci => {
-      const idx = (noteIdx + (ci % 12)) % 12
+    const noteFreqs = chordType.intervals.map(chordInterval => {
+      const idx = (noteIdx + (chordInterval % 12)) % 12
       // Octave shifts for intervals > 11
-      const octaveShift = Math.floor(ci / 12)
+      const octaveShift = Math.floor(chordInterval / 12)
+      console.log(`Calculating note for root ${note}, chord interval ${chordInterval}: note index ${idx}, octave shift ${octaveShift}`)
       return { note: NOTES[idx], octave: 4 + octaveShift }
     })
 
@@ -121,8 +130,21 @@ export function buildScaleChords(rootNote: string, scaleType: keyof typeof SCALE
       label: `${note}${chordType.label}`,
       roman,
       noteFreqs,
+      isOctavatedBase: false,
     }
   })
+
+  // Duplicate the base chord an octave higher
+  const baseChord = scaleChords[0]
+  if (baseChord) {
+    scaleChords.push({
+      ...baseChord,
+      roman: `${baseChord.roman}⁸`,
+      noteFreqs: baseChord.noteFreqs.map(nf => ({ ...nf, octave: nf.octave + 1 })),
+      isOctavatedBase: true,
+    })
+  }
+  return scaleChords
 }
 
 /**

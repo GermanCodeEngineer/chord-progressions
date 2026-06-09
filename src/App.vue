@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="js"> // Convert to TS
 import { computed, ref } from 'vue'
 import ScaleRow from './components/ScaleRow.vue'
 import AllChordsGrid from './components/AllChordsGrid.vue'

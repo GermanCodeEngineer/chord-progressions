@@ -34,7 +34,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="js"> // Convert to TS
 import { ref, computed } from 'vue'
 import { NOTES, CHORD_TYPES, getChordFreqs } from '../musicTheory.ts'
 import { playChord, playingChordId } from '../useAudio.ts'

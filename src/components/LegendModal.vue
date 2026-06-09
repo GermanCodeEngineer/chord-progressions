@@ -53,7 +53,7 @@
   </Teleport>
 </template>
 
-<script setup>
+<script setup lang="js"> // Convert to TS
 import { CHORD_LEGEND, ROMAN_LEGEND } from '../musicTheory.ts'
 
 defineProps({

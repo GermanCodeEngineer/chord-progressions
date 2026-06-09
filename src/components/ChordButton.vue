@@ -15,7 +15,7 @@
   </button>
 </template>
 
-<script setup>
+<script setup lang="js"> // Convert to TS
 import { computed } from 'vue'
 import { playChord, playingChordId, playingProgressionStep } from '../useAudio.ts'
 

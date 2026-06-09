@@ -71,7 +71,7 @@ export const isPlaying: Ref<boolean> = ref(false)
 export const playingChordId: Ref<string | null> = ref(null)
 export const playingProgressionStep: Ref<number | null> = ref(null)
 export const bassNotesOnly: Ref<boolean> = ref(false)
-export const bassOctaveUp: Ref<boolean> = ref(true)
+export const finishWithBase: Ref<boolean> = ref(true)
 
 let stopRequested = false
 let scheduledOscillators: number[] = []
@@ -81,9 +81,6 @@ function notesToPlay(noteFreqs: { note: string, octave: number }[]): { note: str
   if (bassNotesOnly.value && noteFreqs.length > 0) {
     const root = noteFreqs[0]
     notes = root ? [root] : noteFreqs
-  }
-  if (bassOctaveUp.value) {
-    notes = notes.map((nf) => ({ ...nf, octave: nf.octave + 1 }))
   }
   return notes
 }

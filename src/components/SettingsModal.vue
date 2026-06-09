@@ -51,13 +51,13 @@
             <div class="toggle-list">
             <label class="toggle-row">
               <span class="toggle-copy">
-                <span class="toggle-label">Bass one octave up</span>
-                <span class="section-hint inline">Play chord notes one octave higher</span>
+                <span class="toggle-label">Finish with base chord</span>
+                <span class="section-hint inline">Play the octavated base chord of the scale at the end</span>
               </span>
               <input
                 type="checkbox"
                 class="toggle-input"
-                v-model="bassOctaveUp"
+                v-model="finishWithBase"
               />
               <span class="toggle-switch" aria-hidden="true"></span>
             </label>
@@ -102,9 +102,9 @@
   </Teleport>
 </template>
 
-<script setup>
+<script setup lang="js"> // Convert to TS
 import { SCALE_INTERVALS, NOTES, DEFAULT_VISIBLE_SCALES, MIN_BPM, DEFAULT_BPM, MAX_BPM } from '../musicTheory.ts'
-import { bassNotesOnly, bassOctaveUp } from '../useAudio.ts'
+import { bassNotesOnly, finishWithBase } from '../useAudio.ts'
 
 const ALL_NOTES = NOTES
 
@@ -133,7 +133,7 @@ function resetDefaults() {
   emit('update:selectedRoot', 'C')
   emit('update:bpm', DEFAULT_BPM)
   bassNotesOnly.value = false
-  bassOctaveUp.value = true
+  finishWithBase.value = true
 }
 </script>
 
@@ -404,6 +404,7 @@ function resetDefaults() {
 
 .bpm-slider {
   flex: 1;
+  appearance: none;
   -webkit-appearance: none;
   height: 4px;
   background: var(--border);
