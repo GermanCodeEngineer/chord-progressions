@@ -28,8 +28,8 @@
         <button
           class="derive-progression-btn"
           :class="{ 'is-active': inSelectionMode }"
-          @click="toggleSelectionMode"
-          :title="inSelectionMode ? 'Exit selection mode' : 'Select chords to derive a progression'"
+          @click="updateDeriveState(true)"
+          title='Select chords to derive a progression'
         >
           <!-- List/Check icon for selection mode -->
           <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
@@ -40,7 +40,45 @@
             <rect x="1" y="8" width="2" height="2" rx="0.5"/>
             <rect x="4" y="8.5" width="7" height="1"/>
           </svg>
-          <span>{{ inSelectionMode ? 'Cancel Selection' : 'Derive Progression' }}</span>
+          <span>{{ "Derive Progression" }}</span>
+        </button>
+
+        <!-- Confirm Derive Progression Button -->
+        <button
+          class="confirm-selection-btn"
+          @click="updateDeriveState(false)"
+          title="Exit selection mode"
+        >
+          <!-- List/Check icon for selection mode -->
+          <!-- TODO: Change symbol, make btn green -->
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+            <rect x="1" y="2" width="2" height="2" rx="0.5"/>
+            <rect x="4" y="2.5" width="7" height="1"/>
+            <rect x="1" y="5" width="2" height="2" rx="0.5"/>
+            <rect x="4" y="5.5" width="7" height="1"/>
+            <rect x="1" y="8" width="2" height="2" rx="0.5"/>
+            <rect x="4" y="8.5" width="7" height="1"/>
+          </svg>
+          <span>{{ "Confirm Selection" }}</span>
+        </button>
+
+        <!-- Cancel Derive Progression Button -->
+        <button
+          class="cancel-selection-btn"
+          @click="updateDeriveState(false)"
+          title="Exit selection mode"
+        >
+          <!-- List/Check icon for selection mode -->
+          <!-- TODO: Change symbol, make btn red -->
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+            <rect x="1" y="2" width="2" height="2" rx="0.5"/>
+            <rect x="4" y="2.5" width="7" height="1"/>
+            <rect x="1" y="5" width="2" height="2" rx="0.5"/>
+            <rect x="4" y="5.5" width="7" height="1"/>
+            <rect x="1" y="8" width="2" height="2" rx="0.5"/>
+            <rect x="4" y="8.5" width="7" height="1"/>
+          </svg>
+          <span>{{ "Cancel Selection" }}</span>
         </button>
       </div>
     </div>
@@ -86,6 +124,18 @@ const inSelectionMode = ref<boolean>(false)
 const isThisPlaying = computed<boolean>(() =>
   isPlaying.value && activeProgressionId.value === thisProgressionId.value
 )
+
+function updateDeriveState(positive: boolean): void {
+  if (positive) {
+    if (!inSelectionMode.value) {
+      inSelectionMode.value = true
+    } else {
+      // Confirm
+    }
+  } else {
+    inSelectionMode.value = false
+  }
+}
 
 function toggleSelectionMode(): void {
   inSelectionMode.value = !inSelectionMode.value
@@ -154,7 +204,9 @@ async function handlePlayProgression(): Promise<void> {
 }
 
 .play-progression-btn,
-.derive-progression-btn {
+.derive-progression-btn,
+.confirm-selection-btn,
+.cancel-selection-btn {
   display: flex;
   align-items: center;
   gap: 6px;
