@@ -92,7 +92,7 @@ const DIATONIC_QUALITIES = {
  * Build chords for a given root note + scale type
  * TODO: Make class for result
  */
-export function buildScaleChords(rootNote: string, scaleType: keyof typeof SCALE_INTERVALS): Object {
+export function buildScaleChords(rootNote: string, scaleType: keyof typeof SCALE_INTERVALS): object {
   const scale = SCALE_INTERVALS[scaleType]
   if (!scale) return []
 

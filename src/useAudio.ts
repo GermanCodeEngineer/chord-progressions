@@ -1,5 +1,5 @@
 import { ref, type Ref } from 'vue'
-import { noteToFreq, DEFAULT_BPM } from './musicTheory.ts'
+import { noteToFreq, DEFAULT_BPM } from './musicTheory'
 
 let audioCtx: AudioContext | null = null
 let masterGain: GainNode | null = null
