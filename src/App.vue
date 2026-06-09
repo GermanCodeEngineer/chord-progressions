@@ -7,5 +7,6 @@
     documentation
   </p>
 </template>
+<!-- TODO: create proper main page -->
 
 <style scoped></style>
