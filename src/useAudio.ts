@@ -1,11 +1,11 @@
-import { ref } from 'vue'
+import { ref, type Ref } from 'vue'
 import { noteToFreq } from './musicTheory.ts'
 
-let audioCtx = null
+let audioCtx: AudioContext | null = null
 
 function getCtx() {
   if (!audioCtx) {
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)()
+    audioCtx = new AudioContext()
   }
   if (audioCtx.state === 'suspended') {
     audioCtx.resume()
@@ -16,7 +16,7 @@ function getCtx() {
 /**
  * Play a single note with an envelope
  */
-function playNote(freq, startTime, duration = 1.2, volume = 0.18) {
+function playNote(freq: number, startTime: number, duration: number = 1.2, volume: number = 0.18) {
   const ctx = getCtx()
 
   const osc = ctx.createOscillator()
@@ -60,17 +60,17 @@ function playNote(freq, startTime, duration = 1.2, volume = 0.18) {
   osc2.stop(startTime + duration + 0.1)
 }
 
-export const isPlaying = ref(false)
-export const playingChordId = ref(null)
-export const playingProgressionStep = ref(null)
+export const isPlaying: Ref<boolean> = ref(false)
+export const playingChordId: Ref<string | null> = ref(null)
+export const playingProgressionStep: Ref<number | null> = ref(null)
 
 let stopRequested = false
-let scheduledOscillators = []
+let scheduledOscillators: number[] = []
 
 /**
  * Play a chord (array of { note, octave })
  */
-export function playChord(noteFreqs, chordId = null) {
+export function playChord(noteFreqs: { note: string, octave: number }[], chordId: string | null = null): void {
   const ctx = getCtx()
   const now = ctx.currentTime
 
@@ -93,7 +93,7 @@ export function playChord(noteFreqs, chordId = null) {
 /**
  * Play a full chord progression
  */
-export async function playProgression(chords, bpm = 72) {
+export async function playProgression(chords: ({ id: string, noteFreqs: { note: string, octave: number }[] })[], bpm: number = 72): Promise<void> {
   if (isPlaying.value) {
     stopProgression()
     return
@@ -105,14 +105,14 @@ export async function playProgression(chords, bpm = 72) {
   const beatDuration = 60 / bpm
   const chordDuration = beatDuration * 4 // 4 beats per chord
 
-  for (let i = 0; i < chords.length; i++) {
+  for (const [i, chord] of chords.entries()) {
     if (stopRequested) break
 
     playingProgressionStep.value = i
-    playingChordId.value = chords[i].id
+    playingChordId.value = chord.id
 
     const now = ctx.currentTime
-    chords[i].noteFreqs.forEach((nf, ni) => {
+    chord.noteFreqs.forEach((nf, ni) => {
       const freq = noteToFreq(nf.note, nf.octave)
       playNote(freq, now + ni * 0.025, chordDuration * 0.9)
     })

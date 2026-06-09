@@ -61,13 +61,14 @@ const DIATONIC_QUALITIES = {
 
 /**
  * Build chords for a given root note + scale type
+ * TODO: Make class for result
  */
-export function buildScaleChords(rootNote, scaleType) {
+export function buildScaleChords(rootNote: string, scaleType: keyof typeof SCALE_INTERVALS): Object {
   const scale = SCALE_INTERVALS[scaleType]
   if (!scale) return []
 
   const rootIdx = NOTES.indexOf(rootNote)
-  const qualities = DIATONIC_QUALITIES[scaleType] || []
+  const qualities = (DIATONIC_QUALITIES[scaleType] || []) as (keyof typeof CHORD_TYPES)[]
 
   return scale.intervals.map((interval, degree) => {
     const noteIdx = (rootIdx + interval) % 12
@@ -98,7 +99,7 @@ export function buildScaleChords(rootNote, scaleType) {
 /**
  * Get frequency for a note + octave
  */
-export function noteToFreq(note, octave = 4) {
+export function noteToFreq(note: string, octave: number = 4): number {
   const idx = NOTES.indexOf(note)
   // A4 = 440 Hz, A is index 9
   const semitones = (octave - 4) * 12 + (idx - 9)
@@ -113,7 +114,7 @@ export const ALL_ROOTS = NOTES
 /**
  * Get a chord's note frequencies by root + type
  */
-export function getChordFreqs(root, chordTypeName) {
+export function getChordFreqs(root: string, chordTypeName: keyof typeof CHORD_TYPES): { note: string | undefined, octave: number }[] {
   const rootIdx = NOTES.indexOf(root)
   const chordType = CHORD_TYPES[chordTypeName]
   if (!chordType || rootIdx === -1) return []
