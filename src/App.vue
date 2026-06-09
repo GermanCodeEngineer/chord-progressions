@@ -61,7 +61,7 @@ const scaleRows = computed(() =>
     <main class="main-content">
       <section class="section">
         <div class="section-header">
-          <h2>Progressions</h2>
+          <h2>Scale Progressions</h2>
           <p class="section-desc">
             Diatonic chords in <strong>{{ selectedRoot }}</strong>. Click a chord to hear it, or play the full
             progression.

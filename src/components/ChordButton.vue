@@ -1,48 +1,69 @@
 <template>
-  <button
-    class="chord-btn"
+  <div
+    class="chord-card"
     :class="{
       'is-playing': isActive,
       'is-progression-active': isProgressionActive,
       [`quality-${chord.quality}`]: true
     }"
     :title="`${chord.label}, click to play`"
-    @click="handleClick"
+    @click="handleCardClick"
   >
+    <!-- Isolated wrapper prevents the checkbox click from triggering the card audio -->
+    <div
+      class="checkbox-wrapper"
+      v-show="showSelectBox"
+      @click.stop
+    >
+      <RoundCheckbox v-model="isSelected" />
+    </div>
+
     <span class="chord-roman">{{ chord.roman }}</span>
     <span class="chord-name">{{ chord.label }}</span>
     <span class="chord-quality-badge">{{ qualityLabel }}</span>
-  </button>
+  </div>
 </template>
 
-<script setup lang="js"> // Convert to TS
-import { computed } from 'vue'
+<script setup lang="ts">
+import { computed, ref } from 'vue'
+import { type Chord } from '../musicTheory.ts'
 import { playChord, playingChordId, playingProgressionStep } from '../useAudio.ts'
+import RoundCheckbox from './RoundCheckbox.vue'
 
-const props = defineProps({
-  chord: { type: Object, required: true },
-  index: { type: Number, default: -1 },
-})
+const props = withDefaults(
+  defineProps<{
+    chord: Chord
+    showSelectBox: boolean
+    index?: number
+  }>(),
+  {
+    index: -1,
+  }
+)
 
-const isActive = computed(() => playingChordId.value === props.chord.id)
-const isProgressionActive = computed(() =>
+const isSelected = ref<boolean>(true)
+
+const isActive = computed<boolean>(() => playingChordId.value === props.chord.id)
+
+const isProgressionActive = computed<boolean>(() =>
   playingProgressionStep.value === props.index && props.index !== -1
 )
 
-const QUALITY_LABELS = {
+const QUALITY_LABELS: Record<string, string> = {
   major: 'maj', minor: 'min', dim: 'dim', aug: 'aug',
   maj7: 'Δ7', min7: 'm7', dom7: '7', dim7: '°7',
   halfdim7: 'ø7', sus2: 'sus2', sus4: 'sus4', add9: 'add9',
 }
-const qualityLabel = computed(() => QUALITY_LABELS[props.chord.quality] || '')
 
-function handleClick() {
+const qualityLabel = computed<string>(() => QUALITY_LABELS[props.chord.quality] || '')
+
+function handleCardClick(): void {
   playChord(props.chord.noteFreqs, props.chord.id)
 }
 </script>
 
 <style scoped>
-.chord-btn {
+.chord-card {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -53,13 +74,24 @@ function handleClick() {
   border-radius: 8px;
   color: var(--text);
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s, transform 0.1s, box-shadow 0.2s;
+  transition: background 0.15s, border-color 0.15s, transform 0.1s, box-shadow 0.2s, padding 0.2s;
   min-width: 64px;
   position: relative;
   overflow: hidden;
+  user-select: none;
 }
 
-.chord-btn::before {
+/* Checkbox container layout */
+.checkbox-wrapper {
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+  cursor: default;
+}
+
+.chord-card::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -68,19 +100,19 @@ function handleClick() {
   transition: opacity 0.2s;
 }
 
-.chord-btn:hover {
+.chord-card:hover {
   border-color: var(--accent);
   background: var(--accent-dim);
   transform: translateY(-1px);
   box-shadow: 0 4px 16px var(--accent-glow);
 }
 
-.chord-btn:active {
+.chord-card:active {
   transform: translateY(0px) scale(0.97);
 }
 
-.chord-btn.is-playing,
-.chord-btn.is-progression-active {
+.chord-card.is-playing,
+.chord-card.is-progression-active {
   border-color: var(--accent);
   background: var(--accent-dim);
   box-shadow: 0 0 0 1px var(--accent), 0 4px 20px var(--accent-glow);
@@ -102,8 +134,8 @@ function handleClick() {
   transition: color 0.15s;
 }
 
-.chord-btn.is-playing .chord-roman,
-.chord-btn:hover .chord-roman {
+.chord-card.is-playing .chord-roman,
+.chord-card:hover .chord-roman {
   color: var(--accent);
 }
 

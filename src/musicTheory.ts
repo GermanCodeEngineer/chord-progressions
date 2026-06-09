@@ -88,19 +88,26 @@ const DIATONIC_QUALITIES = {
   diminished:      ['dim','dim','dim','dim','dim','dim','dim','dim'],
 }
 
+export interface NoteFreq {
+  note: string
+  octave: number
+}
+
+export interface Chord {
+  id: string
+  root: string,
+  quality: string
+  label: string
+  roman: string
+  noteFreqs: NoteFreq[],
+  isOctavatedBase: boolean,
+}
+
 /**
  * Build chords for a given root note + scale type
  * TODO: Make class for result?
  */
-export function buildScaleChords(rootNote: string, scaleType: keyof typeof SCALE_INTERVALS): {
-  id: string,
-  root: string | undefined,
-  quality: keyof typeof CHORD_TYPES,
-  label: string,
-  roman: string,
-  noteFreqs: { note: string | undefined, octave: number }[],
-  isOctavatedBase: boolean,
-}[] {
+export function buildScaleChords(rootNote: string, scaleType: keyof typeof SCALE_INTERVALS): Chord[] {
   const scale = SCALE_INTERVALS[scaleType]
   if (!scale) return []
 
@@ -109,7 +116,7 @@ export function buildScaleChords(rootNote: string, scaleType: keyof typeof SCALE
 
   const scaleChords = scale.intervals.map((interval, degree) => {
     const noteIdx = (rootIdx + interval) % 12
-    const note = NOTES[noteIdx]
+    const note = NOTES[noteIdx]!
     const quality = qualities[degree] || 'major'
     const chordType = CHORD_TYPES[quality]
     const roman = ROMAN[degree] || (degree + 1).toString()
@@ -120,7 +127,7 @@ export function buildScaleChords(rootNote: string, scaleType: keyof typeof SCALE
       // Octave shifts for intervals > 11
       const octaveShift = Math.floor(chordInterval / 12)
       console.log(`Calculating note for root ${note}, chord interval ${chordInterval}: note index ${idx}, octave shift ${octaveShift}`)
-      return { note: NOTES[idx], octave: 4 + octaveShift }
+      return { note: NOTES[idx]!, octave: 4 + octaveShift }
     })
 
     return {
@@ -165,13 +172,13 @@ export const ALL_ROOTS = NOTES
 /**
  * Get a chord's note frequencies by root + type
  */
-export function getChordFreqs(root: string, chordTypeName: keyof typeof CHORD_TYPES): { note: string | undefined, octave: number }[] {
+export function getChordFreqs(root: string, chordTypeName: keyof typeof CHORD_TYPES): NoteFreq[] {
   const rootIdx = NOTES.indexOf(root)
   const chordType = CHORD_TYPES[chordTypeName]
   if (!chordType || rootIdx === -1) return []
   return chordType.intervals.map(ci => {
     const noteIdx = (rootIdx + (ci % 12)) % 12
     const octaveShift = Math.floor(ci / 12)
-    return { note: NOTES[noteIdx], octave: 4 + octaveShift }
+    return { note: NOTES[noteIdx]!, octave: 4 + octaveShift }
   })
 }

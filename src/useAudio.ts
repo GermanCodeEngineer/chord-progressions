@@ -1,5 +1,5 @@
 import { ref, type Ref } from 'vue'
-import { noteToFreq, DEFAULT_BPM } from './musicTheory'
+import { noteToFreq, DEFAULT_BPM, type NoteFreq, type Chord } from './musicTheory'
 
 let audioCtx: AudioContext | null = null
 let masterGain: GainNode | null = null
@@ -76,7 +76,7 @@ export const finishWithBase: Ref<boolean> = ref(true)
 let stopRequested = false
 let scheduledOscillators: number[] = []
 
-function notesToPlay(noteFreqs: { note: string, octave: number }[]): { note: string, octave: number }[] {
+function notesToPlay(noteFreqs: NoteFreq[]): NoteFreq[] {
   let notes = noteFreqs
   if (bassNotesOnly.value && noteFreqs.length > 0) {
     const root = noteFreqs[0]
@@ -88,7 +88,7 @@ function notesToPlay(noteFreqs: { note: string, octave: number }[]): { note: str
 /**
  * Play a chord (array of { note, octave })
  */
-export function playChord(noteFreqs: { note: string, octave: number }[], chordId: string | null = null): void {
+export function playChord(noteFreqs: NoteFreq[], chordId: string | null = null): void {
   const ctx = getCtx()
   const now = ctx.currentTime
 
@@ -109,7 +109,7 @@ export function playChord(noteFreqs: { note: string, octave: number }[], chordId
 /**
  * Play a full chord progression
  */
-export async function playProgression(chords: ({ id: string, noteFreqs: { note: string, octave: number }[] })[], bpm: number = DEFAULT_BPM): Promise<void> {
+export async function playProgression(chords: Chord[], bpm: number = DEFAULT_BPM): Promise<void> {
   if (isPlaying.value) {
     stopProgression()
     return

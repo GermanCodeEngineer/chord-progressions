@@ -5,27 +5,52 @@
         <span class="scale-root">{{ rootNote }}</span>
         <span class="scale-type">{{ scaleLabel }}</span>
       </div>
-      <button
-        class="play-progression-btn"
-        :class="{ 'is-playing': isThisPlaying }"
-        @click="handlePlayProgression"
-        :title="isThisPlaying ? 'Stop progression' : 'Play all chords in sequence'"
-      >
-        <svg v-if="!isThisPlaying" width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
-          <polygon points="2,1 11,6 2,11"/>
-        </svg>
-        <svg v-else width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
-          <rect x="2" y="1" width="3" height="10"/>
-          <rect x="7" y="1" width="3" height="10"/>
-        </svg>
-        <span>{{ isThisPlaying ? 'Stop' : 'Play' }}</span>
-      </button>
+      
+      <div class="scale-actions">
+        <!-- Play Progression Button -->
+        <button
+          class="play-progression-btn"
+          :class="{ 'is-playing': isThisPlaying }"
+          @click="handlePlayProgression"
+          :title="isThisPlaying ? 'Stop progression' : 'Play all chords in sequence'"
+        >
+          <svg v-if="!isThisPlaying" width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+            <polygon points="2,1 11,6 2,11"/>
+          </svg>
+          <svg v-else width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+            <rect x="2" y="1" width="3" height="10"/>
+            <rect x="7" y="1" width="3" height="10"/>
+          </svg>
+          <span>{{ isThisPlaying ? 'Stop' : 'Play' }}</span>
+        </button>
+
+        <!-- Derive Progression Button (Toggles Selection Mode) -->
+        <button
+          class="derive-progression-btn"
+          :class="{ 'is-active': inSelectionMode }"
+          @click="toggleSelectionMode"
+          :title="inSelectionMode ? 'Exit selection mode' : 'Select chords to derive a progression'"
+        >
+          <!-- List/Check icon for selection mode -->
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+            <rect x="1" y="2" width="2" height="2" rx="0.5"/>
+            <rect x="4" y="2.5" width="7" height="1"/>
+            <rect x="1" y="5" width="2" height="2" rx="0.5"/>
+            <rect x="4" y="5.5" width="7" height="1"/>
+            <rect x="1" y="8" width="2" height="2" rx="0.5"/>
+            <rect x="4" y="8.5" width="7" height="1"/>
+          </svg>
+          <span>{{ inSelectionMode ? 'Cancel Selection' : 'Derive Progression' }}</span>
+        </button>
+      </div>
     </div>
+    
     <div class="chords-row">
       <ChordButton
         v-for="(chord, i) in chords"
         :key="chord.id"
         :chord="chord"
+        :showSelectBox="inSelectionMode"
         :index="isThisPlaying ? i : -1"
         v-show="chord.isOctavatedBase ? finishWithBase : true"
       />
@@ -33,29 +58,40 @@
   </div>
 </template>
 
-<script setup lang="js"> // Convert to TS
+<script setup lang="ts">
 import { computed, ref } from 'vue'
 import ChordButton from './ChordButton.vue'
 import { playProgression, stopProgression, isPlaying, finishWithBase } from '../useAudio.ts'
-import { DEFAULT_BPM } from '../musicTheory.ts'
+import { DEFAULT_BPM, type Chord } from '../musicTheory.ts'
 
-const props = defineProps({
-  rootNote: { type: String, required: true },
-  scaleType: { type: String, required: true },
-  scaleLabel: { type: String, required: true },
-  chords: { type: Array, required: true },
-  bpm: { type: Number, default: DEFAULT_BPM },
-})
+// TypeScript typed Props with defaults
+const props = withDefaults(
+  defineProps<{
+    rootNote: string
+    scaleType: string
+    scaleLabel: string
+    chords: Chord[]
+    bpm?: number
+  }>(),
+  {
+    bpm: DEFAULT_BPM
+  }
+)
 
-const thisProgressionId = computed(() => `${props.rootNote}-${props.scaleType}`)
-const activeProgressionId = ref(null)
+const thisProgressionId = computed<string>(() => `${props.rootNote}-${props.scaleType}`)
+const activeProgressionId = ref<string | null>(null)
+const inSelectionMode = ref<boolean>(false)
 
 // Track if THIS scale's progression is playing
-const isThisPlaying = computed(() =>
+const isThisPlaying = computed<boolean>(() =>
   isPlaying.value && activeProgressionId.value === thisProgressionId.value
 )
 
-async function handlePlayProgression() {
+function toggleSelectionMode(): void {
+  inSelectionMode.value = !inSelectionMode.value
+}
+
+async function handlePlayProgression(): Promise<void> {
   if (isThisPlaying.value) {
     stopProgression()
     activeProgressionId.value = null
@@ -63,7 +99,7 @@ async function handlePlayProgression() {
   }
   if (isPlaying.value) {
     stopProgression()
-    await new Promise(r => setTimeout(r, 50))
+    await new Promise((r) => setTimeout(r, 50))
   }
   activeProgressionId.value = thisProgressionId.value
   await playProgression(props.chords, props.bpm)
@@ -95,6 +131,13 @@ async function handlePlayProgression() {
   gap: 8px;
 }
 
+/* Button action container layout */
+.scale-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .scale-root {
   font-family: var(--font-mono);
   font-size: 18px;
@@ -110,7 +153,8 @@ async function handlePlayProgression() {
   text-transform: uppercase;
 }
 
-.play-progression-btn {
+.play-progression-btn,
+.derive-progression-btn {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -123,15 +167,18 @@ async function handlePlayProgression() {
   font-weight: 500;
   transition: all 0.15s;
   white-space: nowrap;
+  cursor: pointer;
 }
 
-.play-progression-btn:hover {
+.play-progression-btn:hover,
+.derive-progression-btn:hover {
   border-color: var(--accent);
   color: var(--accent);
   background: var(--accent-dim);
 }
 
-.play-progression-btn.is-playing {
+.play-progression-btn.is-playing,
+.derive-progression-btn.is-active {
   border-color: var(--accent);
   color: var(--accent);
   background: var(--accent-dim);
