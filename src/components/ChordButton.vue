@@ -17,7 +17,7 @@
 
 <script setup>
 import { computed } from 'vue'
-import { playChord, playingChordId, playingProgressionStep } from '../composables/useAudio.js'
+import { playChord, playingChordId, playingProgressionStep } from '../useAudio.ts'
 
 const props = defineProps({
   chord: { type: Object, required: true },

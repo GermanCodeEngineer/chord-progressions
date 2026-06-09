@@ -1,7 +1,5 @@
-// TODO: convert to TS
-
 import { ref } from 'vue'
-import { noteToFreq } from '../musicTheory.js'
+import { noteToFreq } from './musicTheory.ts'
 
 let audioCtx = null
 

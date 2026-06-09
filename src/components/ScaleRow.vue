@@ -35,7 +35,7 @@
 <script setup>
 import { computed, ref } from 'vue'
 import ChordButton from './ChordButton.vue'
-import { playProgression, stopProgression, isPlaying, playingChordId } from '../composables/useAudio.js'
+import { playProgression, stopProgression, isPlaying, playingChordId } from '../useAudio.ts'
 
 const props = defineProps({
   rootNote: { type: String, required: true },

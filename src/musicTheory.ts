@@ -1,5 +1,3 @@
-// TODO: convert to TS
-
 // All 12 chromatic notes
 export const NOTES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 

@@ -73,7 +73,7 @@
 </template>
 
 <script setup>
-import { SCALE_INTERVALS, NOTES, DEFAULT_VISIBLE_SCALES } from '../musicTheory.js'
+import { SCALE_INTERVALS, NOTES, DEFAULT_VISIBLE_SCALES } from '../musicTheory.ts'
 
 const ALL_NOTES = NOTES
 

@@ -36,8 +36,8 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import { NOTES, CHORD_TYPES, getChordFreqs } from '../musicTheory.js'
-import { playChord, playingChordId } from '../composables/useAudio.js'
+import { NOTES, CHORD_TYPES, getChordFreqs } from '../musicTheory.ts'
+import { playChord, playingChordId } from '../useAudio.ts'
 
 const activeType = ref('major')
 
