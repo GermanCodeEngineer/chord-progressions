@@ -1,11 +1,15 @@
 import { ref, type Ref } from 'vue'
-import { noteToFreq } from './musicTheory.ts'
+import { noteToFreq, DEFAULT_BPM } from './musicTheory.ts'
 
 let audioCtx: AudioContext | null = null
+let masterGain: GainNode | null = null
 
 function getCtx() {
   if (!audioCtx) {
     audioCtx = new AudioContext()
+    masterGain = audioCtx.createGain()
+    masterGain.gain.value = 0.55
+    masterGain.connect(audioCtx.destination)
   }
   if (audioCtx.state === 'suspended') {
     audioCtx.resume()
@@ -13,59 +17,76 @@ function getCtx() {
   return audioCtx
 }
 
+function getMaster() {
+  getCtx()
+  return masterGain!
+}
+
 /**
- * Play a single note with an envelope
+ * Soft electric-piano tone: filtered sine partials with a gentle ADSR envelope.
  */
-function playNote(freq: number, startTime: number, duration: number = 1.2, volume: number = 0.18) {
+function playNote(freq: number, startTime: number, duration: number = 1.2, volume: number = 0.11) {
   const ctx = getCtx()
+  const output = getMaster()
+  const endTime = startTime + duration + 0.15
 
-  const osc = ctx.createOscillator()
+  const filter = ctx.createBiquadFilter()
+  filter.type = 'lowpass'
+  filter.Q.value = 0.7
+  filter.frequency.setValueAtTime(Math.min(freq * 6, 4200), startTime)
+  filter.frequency.exponentialRampToValueAtTime(900, startTime + Math.min(duration * 0.65, 1.2))
+
   const gainNode = ctx.createGain()
-
-  // Slight detuning for warmth
-  osc.type = 'triangle'
-  osc.frequency.value = freq
-
-  // Harmonic overtone for richness
-  const osc2 = ctx.createOscillator()
-  const gain2 = ctx.createGain()
-  osc2.type = 'sine'
-  osc2.frequency.value = freq * 2
-  gain2.gain.value = volume * 0.3
-
-  // Envelope: fast attack, slow release
   gainNode.gain.setValueAtTime(0, startTime)
-  gainNode.gain.linearRampToValueAtTime(volume, startTime + 0.02)
-  gainNode.gain.exponentialRampToValueAtTime(volume * 0.6, startTime + 0.3)
-  gainNode.gain.exponentialRampToValueAtTime(0.001, startTime + duration)
+  gainNode.gain.linearRampToValueAtTime(volume, startTime + 0.04)
+  gainNode.gain.exponentialRampToValueAtTime(volume * 0.35, startTime + 0.18)
+  gainNode.gain.setValueAtTime(volume * 0.35, startTime + Math.max(duration - 0.25, 0.2))
+  gainNode.gain.exponentialRampToValueAtTime(0.0001, endTime)
 
-  osc.connect(gainNode)
-  osc2.connect(gain2)
+  const partials = [
+    { ratio: 1, level: 1 },
+    { ratio: 2, level: 0.12 },
+    { ratio: 3, level: 0.04 },
+  ]
 
-  // Reverb-like effect using delay
-  const delay = ctx.createDelay(1.0)
-  delay.delayTime.value = 0.08
-  const delayGain = ctx.createGain()
-  delayGain.gain.value = 0.15
-  gainNode.connect(delay)
-  delay.connect(delayGain)
-  delayGain.connect(ctx.destination)
+  for (const partial of partials) {
+    const osc = ctx.createOscillator()
+    osc.type = 'sine'
+    osc.frequency.value = freq * partial.ratio
 
-  gainNode.connect(ctx.destination)
-  gain2.connect(ctx.destination)
+    const partialGain = ctx.createGain()
+    partialGain.gain.value = partial.level
 
-  osc.start(startTime)
-  osc.stop(startTime + duration + 0.1)
-  osc2.start(startTime)
-  osc2.stop(startTime + duration + 0.1)
+    osc.connect(partialGain)
+    partialGain.connect(filter)
+    osc.start(startTime)
+    osc.stop(endTime)
+  }
+
+  filter.connect(gainNode)
+  gainNode.connect(output)
 }
 
 export const isPlaying: Ref<boolean> = ref(false)
 export const playingChordId: Ref<string | null> = ref(null)
 export const playingProgressionStep: Ref<number | null> = ref(null)
+export const bassNotesOnly: Ref<boolean> = ref(false)
+export const bassOctaveUp: Ref<boolean> = ref(true)
 
 let stopRequested = false
 let scheduledOscillators: number[] = []
+
+function notesToPlay(noteFreqs: { note: string, octave: number }[]): { note: string, octave: number }[] {
+  let notes = noteFreqs
+  if (bassNotesOnly.value && noteFreqs.length > 0) {
+    const root = noteFreqs[0]
+    notes = root ? [root] : noteFreqs
+  }
+  if (bassOctaveUp.value) {
+    notes = notes.map((nf) => ({ ...nf, octave: nf.octave + 1 }))
+  }
+  return notes
+}
 
 /**
  * Play a chord (array of { note, octave })
@@ -76,24 +97,22 @@ export function playChord(noteFreqs: { note: string, octave: number }[], chordId
 
   playingChordId.value = chordId
 
-  noteFreqs.forEach((nf, i) => {
+  notesToPlay(noteFreqs).forEach((nf, i) => {
     const freq = noteToFreq(nf.note, nf.octave)
-    // Slight strum: each note 20ms apart
-    playNote(freq, now + i * 0.02, 1.5)
+    playNote(freq, now + i * 0.035, 1.4)
   })
 
-  // Clear playing state after chord fades
   setTimeout(() => {
     if (playingChordId.value === chordId) {
       playingChordId.value = null
     }
-  }, 1800)
+  }, 1600)
 }
 
 /**
  * Play a full chord progression
  */
-export async function playProgression(chords: ({ id: string, noteFreqs: { note: string, octave: number }[] })[], bpm: number = 72): Promise<void> {
+export async function playProgression(chords: ({ id: string, noteFreqs: { note: string, octave: number }[] })[], bpm: number = DEFAULT_BPM): Promise<void> {
   if (isPlaying.value) {
     stopProgression()
     return
@@ -103,7 +122,7 @@ export async function playProgression(chords: ({ id: string, noteFreqs: { note: 
   stopRequested = false
   const ctx = getCtx()
   const beatDuration = 60 / bpm
-  const chordDuration = beatDuration * 4 // 4 beats per chord
+  const chordDuration = beatDuration * 4
 
   for (const [i, chord] of chords.entries()) {
     if (stopRequested) break
@@ -112,12 +131,11 @@ export async function playProgression(chords: ({ id: string, noteFreqs: { note: 
     playingChordId.value = chord.id
 
     const now = ctx.currentTime
-    chord.noteFreqs.forEach((nf, ni) => {
+    notesToPlay(chord.noteFreqs).forEach((nf, ni) => {
       const freq = noteToFreq(nf.note, nf.octave)
-      playNote(freq, now + ni * 0.025, chordDuration * 0.9)
+      playNote(freq, now + ni * 0.04, chordDuration * 0.92, 0.09)
     })
 
-    // Wait for the chord duration
     await new Promise(resolve => {
       const timeout = setTimeout(resolve, chordDuration * 1000)
       scheduledOscillators.push(timeout)

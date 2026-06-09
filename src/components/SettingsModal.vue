@@ -47,12 +47,42 @@
           </div>
 
           <div class="settings-section">
+            <h3>Playback</h3>
+            <div class="toggle-list">
+            <label class="toggle-row">
+              <span class="toggle-copy">
+                <span class="toggle-label">Bass one octave up</span>
+                <span class="section-hint inline">Play chord notes one octave higher</span>
+              </span>
+              <input
+                type="checkbox"
+                class="toggle-input"
+                v-model="bassOctaveUp"
+              />
+              <span class="toggle-switch" aria-hidden="true"></span>
+            </label>
+            <label class="toggle-row">
+              <span class="toggle-copy">
+                <span class="toggle-label">Bass notes only</span>
+                <span class="section-hint inline">Play only the root note of each chord instead of the full chord</span>
+              </span>
+              <input
+                type="checkbox"
+                class="toggle-input"
+                v-model="bassNotesOnly"
+              />
+              <span class="toggle-switch" aria-hidden="true"></span>
+            </label>
+            </div>
+          </div>
+
+          <div class="settings-section">
             <h3>BPM</h3>
             <div class="bpm-control">
               <input
                 type="range"
-                min="40"
-                max="160"
+                :min="MIN_BPM"
+                :max="MAX_BPM"
                 step="4"
                 :value="bpm"
                 @input="$emit('update:bpm', +$event.target.value)"
@@ -73,7 +103,8 @@
 </template>
 
 <script setup>
-import { SCALE_INTERVALS, NOTES, DEFAULT_VISIBLE_SCALES } from '../musicTheory.ts'
+import { SCALE_INTERVALS, NOTES, DEFAULT_VISIBLE_SCALES, MIN_BPM, DEFAULT_BPM, MAX_BPM } from '../musicTheory.ts'
+import { bassNotesOnly, bassOctaveUp } from '../useAudio.ts'
 
 const ALL_NOTES = NOTES
 
@@ -81,7 +112,7 @@ const props = defineProps({
   modelValue: Boolean,
   visibleScales: { type: Array, required: true },
   selectedRoot: { type: String, default: 'C' },
-  bpm: { type: Number, default: 72 },
+  bpm: { type: Number, default: DEFAULT_BPM },
 })
 
 const emit = defineEmits(['update:modelValue', 'update:visibleScales', 'update:selectedRoot', 'update:bpm'])
@@ -100,7 +131,9 @@ function toggleScale(key) {
 function resetDefaults() {
   emit('update:visibleScales', [...DEFAULT_VISIBLE_SCALES])
   emit('update:selectedRoot', 'C')
-  emit('update:bpm', 72)
+  emit('update:bpm', DEFAULT_BPM)
+  bassNotesOnly.value = false
+  bassOctaveUp.value = true
 }
 </script>
 
@@ -184,6 +217,84 @@ function resetDefaults() {
   font-size: 12px;
   color: var(--text-muted);
   margin-bottom: 12px;
+}
+
+.section-hint.inline {
+  display: block;
+  margin-bottom: 0;
+  margin-top: 4px;
+}
+
+.toggle-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 14px;
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.toggle-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.toggle-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.toggle-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-switch {
+  position: relative;
+  width: 42px;
+  height: 24px;
+  background: var(--border);
+  border-radius: 12px;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+
+.toggle-switch::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  background: var(--text);
+  border-radius: 50%;
+  transition: transform 0.15s;
+}
+
+.toggle-input:checked + .toggle-switch {
+  background: var(--accent);
+}
+
+.toggle-input:checked + .toggle-switch::after {
+  transform: translateX(18px);
+  background: #000;
+}
+
+.toggle-input:focus-visible + .toggle-switch {
+  box-shadow: 0 0 0 2px var(--accent-glow);
 }
 
 /* Note grid */

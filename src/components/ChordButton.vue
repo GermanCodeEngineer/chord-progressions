@@ -6,7 +6,7 @@
       'is-progression-active': isProgressionActive,
       [`quality-${chord.quality}`]: true
     }"
-    :title="`${chord.label} — click to play`"
+    :title="`${chord.label}, click to play`"
     @click="handleClick"
   >
     <span class="chord-roman">{{ chord.roman }}</span>

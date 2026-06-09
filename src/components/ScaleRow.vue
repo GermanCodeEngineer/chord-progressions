@@ -36,12 +36,14 @@
 import { computed, ref } from 'vue'
 import ChordButton from './ChordButton.vue'
 import { playProgression, stopProgression, isPlaying, playingChordId } from '../useAudio.ts'
+import { DEFAULT_BPM } from '../musicTheory.ts'
 
 const props = defineProps({
   rootNote: { type: String, required: true },
   scaleType: { type: String, required: true },
   scaleLabel: { type: String, required: true },
   chords: { type: Array, required: true },
+  bpm: { type: Number, default: DEFAULT_BPM },
 })
 
 const thisProgressionId = computed(() => `${props.rootNote}-${props.scaleType}`)
@@ -63,7 +65,7 @@ async function handlePlayProgression() {
     await new Promise(r => setTimeout(r, 50))
   }
   activeProgressionId.value = thisProgressionId.value
-  await playProgression(props.chords)
+  await playProgression(props.chords, props.bpm)
   activeProgressionId.value = null
 }
 </script>
