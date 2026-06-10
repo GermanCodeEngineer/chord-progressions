@@ -1,16 +1,12 @@
-<script setup>
-// TODO: adapt style to rest of website (gree hook doesn't fit in with the rest of the design)
-const props = defineProps({
-  modelValue: {
-    type: Boolean,
-    required: true
-  }
-})
+<script setup lang="ts">
+// TODO: adapt style to rest of website (green hook doesn't fit in with the rest of the design)
+const props = defineProps<{
+  modelValue: boolean
+}>()
 
 const emit = defineEmits(['update:modelValue'])
 
-// Schaltet den Zustand bei jedem Klick um
-const toggle = () => {
+function toggle(): void {
   emit('update:modelValue', !props.modelValue)
 }
 </script>

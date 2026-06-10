@@ -30,6 +30,8 @@ import { type Chord } from '../musicTheory.ts'
 import { playChord, playingChordId, playingProgressionStep } from '../useAudio.ts'
 import RoundCheckbox from './RoundCheckbox.vue'
 
+const isSelected = defineModel('isSelected', { type: Boolean, default: false })
+
 const props = withDefaults(
   defineProps<{
     chord: Chord
@@ -40,8 +42,6 @@ const props = withDefaults(
     index: -1,
   }
 )
-
-const isSelected = ref<boolean>(true)
 
 const isActive = computed<boolean>(() => playingChordId.value === props.chord.id)
 

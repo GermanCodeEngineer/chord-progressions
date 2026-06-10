@@ -34,19 +34,19 @@
   </div>
 </template>
 
-<script setup lang="js"> // Convert to TS
+<script setup lang="ts">
 import { ref, computed } from 'vue'
 import { NOTES, CHORD_TYPES, getChordFreqs } from '../musicTheory.ts'
 import { playChord, playingChordId } from '../useAudio.ts'
 
-const activeType = ref('major')
+const activeType = ref<keyof typeof CHORD_TYPES>('major')
 
-function getChordNotes(root) {
+function getChordNotes(root: typeof NOTES[number]): string {
   const freqs = getChordFreqs(root, activeType.value)
   return freqs.map(f => f.note).join(' · ')
 }
 
-function handleClick(root) {
+function handleClick(root: typeof NOTES[number]): void {
   const freqs = getChordFreqs(root, activeType.value)
   playChord(freqs, `${root}${activeType.value}`)
 }

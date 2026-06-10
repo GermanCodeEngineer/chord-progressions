@@ -1,10 +1,10 @@
 <template>
   <Teleport to="body">
-    <div v-if="modelValue" class="modal-backdrop" @click.self="$emit('update:modelValue', false)">
+    <div v-if="modelValue" class="modal-backdrop" @click.self="emit('update:modelValue', false)">
       <div class="modal" role="dialog" aria-modal="true" aria-label="Scale Settings">
         <div class="modal-header">
           <h2>Scale Settings</h2>
-          <button class="close-btn" @click="$emit('update:modelValue', false)" aria-label="Close">
+          <button class="close-btn" @click="emit('update:modelValue', false)" aria-label="Close">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
               <path d="M12.7 3.3a1 1 0 00-1.4 0L8 6.6 4.7 3.3a1 1 0 00-1.4 1.4L6.6 8l-3.3 3.3a1 1 0 001.4 1.4L8 9.4l3.3 3.3a1 1 0 001.4-1.4L9.4 8l3.3-3.3a1 1 0 000-1.4z"/>
             </svg>
@@ -20,7 +20,7 @@
                 :key="note"
                 class="note-btn"
                 :class="{ active: selectedRoot === note }"
-                @click="$emit('update:selectedRoot', note)"
+                @click="emit('update:selectedRoot', note)"
               >{{ note }}</button>
             </div>
           </div>
@@ -85,7 +85,7 @@
                 :max="MAX_BPM"
                 step="4"
                 :value="bpm"
-                @input="$emit('update:bpm', +$event.target.value)"
+                @input="emit('update:bpm', +($event.target! as HTMLInputElement).value)"
                 class="bpm-slider"
               />
               <span class="bpm-value">{{ bpm }} BPM</span>
@@ -95,14 +95,14 @@
 
         <div class="modal-footer">
           <button class="btn-secondary" @click="resetDefaults">Reset defaults</button>
-          <button class="btn-primary" @click="$emit('update:modelValue', false)">Done</button>
+          <button class="btn-primary" @click="emit('update:modelValue', false)">Done</button>
         </div>
       </div>
     </div>
   </Teleport>
 </template>
 
-<script setup lang="js"> // Convert to TS
+<script setup lang="ts">
 import { SCALE_INTERVALS, NOTES, DEFAULT_VISIBLE_SCALES, MIN_BPM, DEFAULT_BPM, MAX_BPM } from '../musicTheory.ts'
 import { bassNotesOnly, finishWithBase } from '../useAudio.ts'
 
@@ -117,7 +117,7 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue', 'update:visibleScales', 'update:selectedRoot', 'update:bpm'])
 
-function toggleScale(key) {
+function toggleScale(key: keyof typeof SCALE_INTERVALS): void {
   const current = [...props.visibleScales]
   const idx = current.indexOf(key)
   if (idx === -1) {

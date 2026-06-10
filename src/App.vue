@@ -1,10 +1,11 @@
-<script setup lang="js"> // Convert to TS
+<script setup lang="ts">
 import { computed, ref } from 'vue'
 import ScaleRow from './components/ScaleRow.vue'
 import AllChordsGrid from './components/AllChordsGrid.vue'
 import SettingsModal from './components/SettingsModal.vue'
 import LegendModal from './components/LegendModal.vue'
 import {
+  NOTES,
   SCALE_INTERVALS,
   DEFAULT_VISIBLE_SCALES,
   DEFAULT_BPM,
@@ -13,7 +14,7 @@ import {
 
 const showSettings = ref(false)
 const showLegend = ref(false)
-const selectedRoot = ref('C')
+const selectedRoot = ref<typeof NOTES[number]>('C')
 const bpm = ref(DEFAULT_BPM)
 const visibleScales = ref([...DEFAULT_VISIBLE_SCALES])
 

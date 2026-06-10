@@ -20,7 +20,7 @@ export const SCALE_INTERVALS = {
 }
 
 // Default visible scales
-export const DEFAULT_VISIBLE_SCALES = ['major', 'naturalMinor']
+export const DEFAULT_VISIBLE_SCALES: (keyof typeof SCALE_INTERVALS)[] = ['major', 'naturalMinor']
 
 export const MIN_BPM = 40
 export const DEFAULT_BPM = 120
@@ -89,16 +89,16 @@ const DIATONIC_QUALITIES = {
 }
 
 export interface NoteFreq {
-  note: string
+  note: typeof NOTES[number]
   octave: number
 }
 
 export interface Chord {
   id: string
-  root: string,
-  quality: string
+  root: typeof NOTES[number],
+  quality: keyof typeof CHORD_TYPES
   label: string
-  roman: string
+  roman: typeof ROMAN[number] | "I⁸"
   noteFreqs: NoteFreq[],
   isOctavatedBase: boolean,
 }
@@ -107,7 +107,7 @@ export interface Chord {
  * Build chords for a given root note + scale type
  * TODO: Make class for result?
  */
-export function buildScaleChords(rootNote: string, scaleType: keyof typeof SCALE_INTERVALS): Chord[] {
+export function buildScaleChords(rootNote: typeof NOTES[number], scaleType: keyof typeof SCALE_INTERVALS): Chord[] {
   const scale = SCALE_INTERVALS[scaleType]
   if (!scale) return []
 
@@ -156,7 +156,7 @@ export function buildScaleChords(rootNote: string, scaleType: keyof typeof SCALE
 /**
  * Get frequency for a note + octave
  */
-export function noteToFreq(note: string, octave: number = 4): number {
+export function noteToFreq(note: typeof NOTES[number], octave: number = 4): number {
   const idx = NOTES.indexOf(note)
   // A4 = 440 Hz, A is index 9
   const semitones = (octave - 4) * 12 + (idx - 9)
@@ -171,7 +171,7 @@ export const ALL_ROOTS = NOTES
 /**
  * Get a chord's note frequencies by root + type
  */
-export function getChordFreqs(root: string, chordTypeName: keyof typeof CHORD_TYPES): NoteFreq[] {
+export function getChordFreqs(root: typeof NOTES[number], chordTypeName: keyof typeof CHORD_TYPES): NoteFreq[] {
   const rootIdx = NOTES.indexOf(root)
   const chordType = CHORD_TYPES[chordTypeName]
   if (!chordType || rootIdx === -1) return []

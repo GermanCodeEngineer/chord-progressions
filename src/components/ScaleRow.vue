@@ -26,7 +26,7 @@
         <button
           v-if="!inSelectionMode"
           class="derive-progression-btn"
-          @click="updateDeriveState(true)"
+          @click="openSelectionMenu()"
           title='Select chords to derive a progression'
         >
           <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
@@ -43,7 +43,7 @@
         <button
           v-if="inSelectionMode"
           class="confirm-selection-btn"
-          @click="updateDeriveState(true)"
+          @click="confirmSelection()"
           title="Confirm your selected progression"
         >
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -55,7 +55,7 @@
         <button
           v-if="inSelectionMode"
           class="cancel-selection-btn"
-          @click="updateDeriveState(false)"
+          @click="cancelSelection()"
           title="Exit selection mode"
         >
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
@@ -73,6 +73,7 @@
         :key="chord.id"
         :chord="chord"
         :showSelectBox="inSelectionMode"
+        v-model:isSelected="buttonsSelectedState[i]!"
         :index="isThisPlaying ? i : -1"
         v-show="chord.isOctavatedBase ? finishWithBase : true"
       />
@@ -84,12 +85,12 @@
 import { computed, ref } from 'vue'
 import ChordButton from './ChordButton.vue'
 import { playProgression, stopProgression, isPlaying, finishWithBase } from '../useAudio.ts'
-import { DEFAULT_BPM, type Chord } from '../musicTheory.ts'
+import { NOTES, SCALE_INTERVALS, DEFAULT_BPM, type Chord } from '../musicTheory.ts'
 
 const props = withDefaults(
   defineProps<{
-    rootNote: string
-    scaleType: string
+    rootNote: typeof NOTES[number]
+    scaleType: keyof typeof SCALE_INTERVALS
     scaleLabel: string
     chords: Chord[]
     bpm?: number
@@ -99,6 +100,8 @@ const props = withDefaults(
   }
 )
 
+const buttonsSelectedState = ref<boolean[]>(Array(props.chords.length).fill(true))
+
 const thisProgressionId = computed<string>(() => `${props.rootNote}-${props.scaleType}`)
 const activeProgressionId = ref<string | null>(null)
 const inSelectionMode = ref<boolean>(false)
@@ -106,19 +109,6 @@ const inSelectionMode = ref<boolean>(false)
 const isThisPlaying = computed<boolean>(() =>
   isPlaying.value && activeProgressionId.value === thisProgressionId.value
 )
-
-function updateDeriveState(positive: boolean): void {
-  if (positive) {
-    if (!inSelectionMode.value) {
-      inSelectionMode.value = true
-    } else {
-      // Confirm logic goes here
-      
-    }
-  } else {
-    inSelectionMode.value = false
-  }
-}
 
 async function handlePlayProgression(): Promise<void> {
   if (isThisPlaying.value) {
@@ -134,6 +124,32 @@ async function handlePlayProgression(): Promise<void> {
   await playProgression(props.chords, props.bpm)
   activeProgressionId.value = null
 }
+
+function openSelectionMenu(): void {
+  inSelectionMode.value = true
+  
+  console.log("Current selectedState for chords:", buttonsSelectedState.value)
+}
+
+function confirmSelection(): void {
+  if (!inSelectionMode.value) return
+  
+  console.log("Current selectedState for chords:", buttonsSelectedState.value)
+
+  buttonsSelectedState.value = Array(props.chords.length).fill(true)
+  inSelectionMode.value = false
+}
+
+function cancelSelection(): void {
+  inSelectionMode.value = false
+  // Additional logic to reset any temporary selection state if necessary
+  
+  console.log("Current selectedState for chords:", buttonsSelectedState.value)
+
+  buttonsSelectedState.value = Array(props.chords.length).fill(true)
+  inSelectionMode.value = false
+}
+
 </script>
 
 <style scoped>
