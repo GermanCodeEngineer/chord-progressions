@@ -126,7 +126,6 @@ export function buildScaleChords(rootNote: string, scaleType: keyof typeof SCALE
       const idx = (noteIdx + (chordInterval % 12)) % 12
       // Octave shifts for intervals > 11
       const octaveShift = Math.floor(chordInterval / 12)
-      console.log(`Calculating note for root ${note}, chord interval ${chordInterval}: note index ${idx}, octave shift ${octaveShift}`)
       return { note: NOTES[idx]!, octave: 4 + octaveShift }
     })
 

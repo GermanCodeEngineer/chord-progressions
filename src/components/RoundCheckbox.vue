@@ -1,4 +1,5 @@
 <script setup>
+// TODO: adapt style to rest of website (gree hook doesn't fit in with the rest of the design)
 const props = defineProps({
   modelValue: {
     type: Boolean,
@@ -15,8 +16,8 @@ const toggle = () => {
 </script>
 
 <template>
-  <div 
-    class="circle-checkbox" 
+  <div
+    class="circle-checkbox"
     :class="{ 'is-checked': modelValue }"
     @click="toggle"
   >

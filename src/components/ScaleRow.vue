@@ -5,9 +5,8 @@
         <span class="scale-root">{{ rootNote }}</span>
         <span class="scale-type">{{ scaleLabel }}</span>
       </div>
-      
+
       <div class="scale-actions">
-        <!-- Play Progression Button -->
         <button
           class="play-progression-btn"
           :class="{ 'is-playing': isThisPlaying }"
@@ -24,14 +23,12 @@
           <span>{{ isThisPlaying ? 'Stop' : 'Play' }}</span>
         </button>
 
-        <!-- Derive Progression Button (Toggles Selection Mode) -->
         <button
+          v-if="!inSelectionMode"
           class="derive-progression-btn"
-          :class="{ 'is-active': inSelectionMode }"
           @click="updateDeriveState(true)"
           title='Select chords to derive a progression'
         >
-          <!-- List/Check icon for selection mode -->
           <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
             <rect x="1" y="2" width="2" height="2" rx="0.5"/>
             <rect x="4" y="2.5" width="7" height="1"/>
@@ -40,49 +37,36 @@
             <rect x="1" y="8" width="2" height="2" rx="0.5"/>
             <rect x="4" y="8.5" width="7" height="1"/>
           </svg>
-          <span>{{ "Derive Progression" }}</span>
+          <span>Derive Progression</span>
         </button>
 
-        <!-- Confirm Derive Progression Button -->
         <button
+          v-if="inSelectionMode"
           class="confirm-selection-btn"
-          @click="updateDeriveState(false)"
-          title="Exit selection mode"
+          @click="updateDeriveState(true)"
+          title="Confirm your selected progression"
         >
-          <!-- List/Check icon for selection mode -->
-          <!-- TODO: Change symbol, make btn green -->
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
-            <rect x="1" y="2" width="2" height="2" rx="0.5"/>
-            <rect x="4" y="2.5" width="7" height="1"/>
-            <rect x="1" y="5" width="2" height="2" rx="0.5"/>
-            <rect x="4" y="5.5" width="7" height="1"/>
-            <rect x="1" y="8" width="2" height="2" rx="0.5"/>
-            <rect x="4" y="8.5" width="7" height="1"/>
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="2 6 5 9 10 3"/>
           </svg>
-          <span>{{ "Confirm Selection" }}</span>
+          <span>Confirm Selection</span>
         </button>
 
-        <!-- Cancel Derive Progression Button -->
         <button
+          v-if="inSelectionMode"
           class="cancel-selection-btn"
           @click="updateDeriveState(false)"
           title="Exit selection mode"
         >
-          <!-- List/Check icon for selection mode -->
-          <!-- TODO: Change symbol, make btn red -->
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
-            <rect x="1" y="2" width="2" height="2" rx="0.5"/>
-            <rect x="4" y="2.5" width="7" height="1"/>
-            <rect x="1" y="5" width="2" height="2" rx="0.5"/>
-            <rect x="4" y="5.5" width="7" height="1"/>
-            <rect x="1" y="8" width="2" height="2" rx="0.5"/>
-            <rect x="4" y="8.5" width="7" height="1"/>
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <line x1="2" y1="2" x2="10" y2="10"/>
+            <line x1="10" y1="2" x2="2" y2="10"/>
           </svg>
-          <span>{{ "Cancel Selection" }}</span>
+          <span>Cancel</span>
         </button>
       </div>
     </div>
-    
+
     <div class="chords-row">
       <ChordButton
         v-for="(chord, i) in chords"
@@ -102,7 +86,6 @@ import ChordButton from './ChordButton.vue'
 import { playProgression, stopProgression, isPlaying, finishWithBase } from '../useAudio.ts'
 import { DEFAULT_BPM, type Chord } from '../musicTheory.ts'
 
-// TypeScript typed Props with defaults
 const props = withDefaults(
   defineProps<{
     rootNote: string
@@ -120,7 +103,6 @@ const thisProgressionId = computed<string>(() => `${props.rootNote}-${props.scal
 const activeProgressionId = ref<string | null>(null)
 const inSelectionMode = ref<boolean>(false)
 
-// Track if THIS scale's progression is playing
 const isThisPlaying = computed<boolean>(() =>
   isPlaying.value && activeProgressionId.value === thisProgressionId.value
 )
@@ -130,15 +112,12 @@ function updateDeriveState(positive: boolean): void {
     if (!inSelectionMode.value) {
       inSelectionMode.value = true
     } else {
-      // Confirm
+      // Confirm logic goes here
+      
     }
   } else {
     inSelectionMode.value = false
   }
-}
-
-function toggleSelectionMode(): void {
-  inSelectionMode.value = !inSelectionMode.value
 }
 
 async function handlePlayProgression(): Promise<void> {
@@ -158,6 +137,13 @@ async function handlePlayProgression(): Promise<void> {
 </script>
 
 <style scoped>
+/* Fallback contextual variables if not declared globally */
+:root {
+  --success: #2e7d32;
+  --danger: #d32f2f;
+  --danger-dim: rgba(211, 47, 47, 0.1);
+}
+
 .scale-row {
   padding: 20px 0;
   border-bottom: 1px solid var(--border-subtle);
@@ -181,7 +167,6 @@ async function handlePlayProgression(): Promise<void> {
   gap: 8px;
 }
 
-/* Button action container layout */
 .scale-actions {
   display: flex;
   align-items: center;
@@ -203,6 +188,7 @@ async function handlePlayProgression(): Promise<void> {
   text-transform: uppercase;
 }
 
+/* Base button properties shared across all state controls */
 .play-progression-btn,
 .derive-progression-btn,
 .confirm-selection-btn,
@@ -217,11 +203,12 @@ async function handlePlayProgression(): Promise<void> {
   color: var(--text-muted);
   font-size: 12px;
   font-weight: 500;
-  transition: all 0.15s;
+  transition: all 0.15s ease;
   white-space: nowrap;
   cursor: pointer;
 }
 
+/* Individualized Hover States (Fixed Orange Hover Leakage) */
 .play-progression-btn:hover,
 .derive-progression-btn:hover {
   border-color: var(--accent);
@@ -229,12 +216,35 @@ async function handlePlayProgression(): Promise<void> {
   background: var(--accent-dim);
 }
 
-.play-progression-btn.is-playing,
-.derive-progression-btn.is-active {
+.play-progression-btn.is-playing {
   border-color: var(--accent);
   color: var(--accent);
   background: var(--accent-dim);
-  box-shadow: 0 0 12px var(--accent-glow);
+}
+
+/* Dedicated Green styling for Confirmation */
+.confirm-selection-btn {
+  border-color: var(--success, #2e7d32);
+  color: #fff;
+  background: var(--success, #2e7d32);
+}
+
+.confirm-selection-btn:hover {
+  background: color-mix(in srgb, var(--success, #2e7d32), #000 15%);
+  border-color: color-mix(in srgb, var(--success, #2e7d32), #000 15%);
+  color: #fff;
+}
+
+/* Dedicated Red styling for Cancellation */
+.cancel-selection-btn {
+  border-color: var(--danger, #d32f2f);
+  color: var(--danger, #d32f2f);
+  background: transparent;
+}
+
+.cancel-selection-btn:hover {
+  background: var(--danger-dim, rgba(211, 47, 47, 0.1));
+  color: var(--danger, #d32f2f);
 }
 
 .chords-row {
