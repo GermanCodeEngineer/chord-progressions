@@ -4,17 +4,13 @@
     :class="{
       'is-playing': isActive,
       'is-progression-active': isProgressionActive,
-      [`quality-${chord.quality}`]: true
+      [`quality-${chord.quality}`]: true,
     }"
     :title="`${chord.label}, click to play`"
     @click="handleCardClick"
   >
     <!-- Isolated wrapper prevents the checkbox click from triggering the card audio -->
-    <div
-      class="checkbox-wrapper"
-      v-show="showSelectBox"
-      @click.stop
-    >
+    <div class="checkbox-wrapper" v-show="showSelectBox" @click.stop>
       <RoundCheckbox v-model="isSelected" />
     </div>
 
@@ -25,12 +21,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { type Chord } from '../musicTheory.ts'
-import { playChord, playingChordId, playingProgressionStep } from '../useAudio.ts'
-import RoundCheckbox from './RoundCheckbox.vue'
+import { computed } from "vue"
+import { type Chord } from "../musicTheory.ts"
+import { playChord, playingChordId, playingProgressionStep } from "../useAudio.ts"
+import RoundCheckbox from "./RoundCheckbox.vue"
 
-const isSelected = defineModel('isSelected', { type: Boolean, default: false })
+const isSelected = defineModel("isSelected", { type: Boolean, default: false })
 
 const props = withDefaults(
   defineProps<{
@@ -40,22 +36,31 @@ const props = withDefaults(
   }>(),
   {
     index: -1,
-  }
+  },
 )
 
 const isActive = computed<boolean>(() => playingChordId.value === props.chord.id)
 
-const isProgressionActive = computed<boolean>(() =>
-  playingProgressionStep.value === props.index && props.index !== -1
+const isProgressionActive = computed<boolean>(
+  () => playingProgressionStep.value === props.index && props.index !== -1,
 )
 
 const QUALITY_LABELS: Record<string, string> = {
-  major: 'maj', minor: 'min', dim: 'dim', aug: 'aug',
-  maj7: 'Δ7', min7: 'm7', dom7: '7', dim7: '°7',
-  halfdim7: 'ø7', sus2: 'sus2', sus4: 'sus4', add9: 'add9',
+  major: "maj",
+  minor: "min",
+  dim: "dim",
+  aug: "aug",
+  maj7: "Δ7",
+  min7: "m7",
+  dom7: "7",
+  dim7: "°7",
+  halfdim7: "ø7",
+  sus2: "sus2",
+  sus4: "sus4",
+  add9: "add9",
 }
 
-const qualityLabel = computed<string>(() => QUALITY_LABELS[props.chord.quality] || '')
+const qualityLabel = computed<string>(() => QUALITY_LABELS[props.chord.quality] || "")
 
 function handleCardClick(): void {
   playChord(props.chord.noteFreqs, props.chord.id)
@@ -74,7 +79,12 @@ function handleCardClick(): void {
   border-radius: 8px;
   color: var(--text);
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s, transform 0.1s, box-shadow 0.2s, padding 0.2s;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    transform 0.1s,
+    box-shadow 0.2s,
+    padding 0.2s;
   min-width: 64px;
   position: relative;
   overflow: hidden;
@@ -92,7 +102,7 @@ function handleCardClick(): void {
 }
 
 .chord-card::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background: var(--accent);
@@ -115,14 +125,28 @@ function handleCardClick(): void {
 .chord-card.is-progression-active {
   border-color: var(--accent);
   background: var(--accent-dim);
-  box-shadow: 0 0 0 1px var(--accent), 0 4px 20px var(--accent-glow);
+  box-shadow:
+    0 0 0 1px var(--accent),
+    0 4px 20px var(--accent-glow);
   animation: chord-pulse 0.4s ease-out;
 }
 
 @keyframes chord-pulse {
-  0% { box-shadow: 0 0 0 0 var(--accent-glow), 0 0 0 1px var(--accent); }
-  50% { box-shadow: 0 0 0 6px transparent, 0 0 0 1px var(--accent); }
-  100% { box-shadow: 0 0 0 1px var(--accent), 0 4px 20px var(--accent-glow); }
+  0% {
+    box-shadow:
+      0 0 0 0 var(--accent-glow),
+      0 0 0 1px var(--accent);
+  }
+  50% {
+    box-shadow:
+      0 0 0 6px transparent,
+      0 0 0 1px var(--accent);
+  }
+  100% {
+    box-shadow:
+      0 0 0 1px var(--accent),
+      0 4px 20px var(--accent-glow);
+  }
 }
 
 .chord-roman {
@@ -158,11 +182,21 @@ function handleCardClick(): void {
 }
 
 /* Quality-based accent colors */
-.quality-minor .chord-roman { color: #7A9EC5; }
+.quality-minor .chord-roman {
+  color: #7a9ec5;
+}
 .quality-minor:hover .chord-roman,
-.quality-minor.is-playing .chord-roman { color: #7AB8F5; }
-.quality-dim .chord-roman { color: #C57A7A; }
+.quality-minor.is-playing .chord-roman {
+  color: #7ab8f5;
+}
+.quality-dim .chord-roman {
+  color: #c57a7a;
+}
 .quality-dim:hover .chord-roman,
-.quality-dim.is-playing .chord-roman { color: #F57A7A; }
-.quality-aug .chord-roman { color: #9E7AC5; }
+.quality-dim.is-playing .chord-roman {
+  color: #f57a7a;
+}
+.quality-aug .chord-roman {
+  color: #9e7ac5;
+}
 </style>

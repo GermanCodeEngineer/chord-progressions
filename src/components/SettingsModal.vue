@@ -6,7 +6,9 @@
           <h2>Scale Settings</h2>
           <button class="close-btn" @click="emit('update:modelValue', false)" aria-label="Close">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-              <path d="M12.7 3.3a1 1 0 00-1.4 0L8 6.6 4.7 3.3a1 1 0 00-1.4 1.4L6.6 8l-3.3 3.3a1 1 0 001.4 1.4L8 9.4l3.3 3.3a1 1 0 001.4-1.4L9.4 8l3.3-3.3a1 1 0 000-1.4z"/>
+              <path
+                d="M12.7 3.3a1 1 0 00-1.4 0L8 6.6 4.7 3.3a1 1 0 00-1.4 1.4L6.6 8l-3.3 3.3a1 1 0 001.4 1.4L8 9.4l3.3 3.3a1 1 0 001.4-1.4L9.4 8l3.3-3.3a1 1 0 000-1.4z"
+              />
             </svg>
           </button>
         </div>
@@ -21,7 +23,9 @@
                 class="note-btn"
                 :class="{ active: selectedRoot === note }"
                 @click="emit('update:selectedRoot', note)"
-              >{{ note }}</button>
+              >
+                {{ note }}
+              </button>
             </div>
           </div>
 
@@ -49,30 +53,26 @@
           <div class="settings-section">
             <h3>Playback</h3>
             <div class="toggle-list">
-            <label class="toggle-row">
-              <span class="toggle-copy">
-                <span class="toggle-label">Finish with base chord</span>
-                <span class="section-hint inline">Play the octavated base chord of the scale at the end</span>
-              </span>
-              <input
-                type="checkbox"
-                class="toggle-input"
-                v-model="finishWithBase"
-              />
-              <span class="toggle-switch" aria-hidden="true"></span>
-            </label>
-            <label class="toggle-row">
-              <span class="toggle-copy">
-                <span class="toggle-label">Bass notes only</span>
-                <span class="section-hint inline">Play only the root note of each chord instead of the full chord</span>
-              </span>
-              <input
-                type="checkbox"
-                class="toggle-input"
-                v-model="bassNotesOnly"
-              />
-              <span class="toggle-switch" aria-hidden="true"></span>
-            </label>
+              <label class="toggle-row">
+                <span class="toggle-copy">
+                  <span class="toggle-label">Finish with base chord</span>
+                  <span class="section-hint inline"
+                    >Play the octavated base chord of the scale at the end</span
+                  >
+                </span>
+                <input type="checkbox" class="toggle-input" v-model="finishWithBase" />
+                <span class="toggle-switch" aria-hidden="true"></span>
+              </label>
+              <label class="toggle-row">
+                <span class="toggle-copy">
+                  <span class="toggle-label">Bass notes only</span>
+                  <span class="section-hint inline"
+                    >Play only the root note of each chord instead of the full chord</span
+                  >
+                </span>
+                <input type="checkbox" class="toggle-input" v-model="bassNotesOnly" />
+                <span class="toggle-switch" aria-hidden="true"></span>
+              </label>
             </div>
           </div>
 
@@ -103,19 +103,31 @@
 </template>
 
 <script setup lang="ts">
-import { SCALE_INTERVALS, NOTES, DEFAULT_VISIBLE_SCALES, MIN_BPM, DEFAULT_BPM, MAX_BPM } from '../musicTheory.ts'
-import { bassNotesOnly, finishWithBase } from '../useAudio.ts'
+import {
+  SCALE_INTERVALS,
+  NOTES,
+  DEFAULT_VISIBLE_SCALES,
+  MIN_BPM,
+  DEFAULT_BPM,
+  MAX_BPM,
+} from "../musicTheory.ts"
+import { bassNotesOnly, finishWithBase } from "../useAudio.ts"
 
 const ALL_NOTES = NOTES
 
 const props = defineProps({
   modelValue: Boolean,
   visibleScales: { type: Array, required: true },
-  selectedRoot: { type: String, default: 'C' },
+  selectedRoot: { type: String, default: "C" },
   bpm: { type: Number, default: DEFAULT_BPM },
 })
 
-const emit = defineEmits(['update:modelValue', 'update:visibleScales', 'update:selectedRoot', 'update:bpm'])
+const emit = defineEmits([
+  "update:modelValue",
+  "update:visibleScales",
+  "update:selectedRoot",
+  "update:bpm",
+])
 
 function toggleScale(key: keyof typeof SCALE_INTERVALS): void {
   const current = [...props.visibleScales]
@@ -125,13 +137,13 @@ function toggleScale(key: keyof typeof SCALE_INTERVALS): void {
   } else if (current.length > 1) {
     current.splice(idx, 1)
   }
-  emit('update:visibleScales', current)
+  emit("update:visibleScales", current)
 }
 
 function resetDefaults() {
-  emit('update:visibleScales', [...DEFAULT_VISIBLE_SCALES])
-  emit('update:selectedRoot', 'C')
-  emit('update:bpm', DEFAULT_BPM)
+  emit("update:visibleScales", [...DEFAULT_VISIBLE_SCALES])
+  emit("update:selectedRoot", "C")
+  emit("update:bpm", DEFAULT_BPM)
   bassNotesOnly.value = false
   finishWithBase.value = true
 }
@@ -273,7 +285,7 @@ function resetDefaults() {
 }
 
 .toggle-switch::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 3px;
   left: 3px;
@@ -377,7 +389,7 @@ function resetDefaults() {
 }
 
 .scale-check.checked .checkmark::after {
-  content: '';
+  content: "";
   position: absolute;
   left: 3px;
   top: 1px;

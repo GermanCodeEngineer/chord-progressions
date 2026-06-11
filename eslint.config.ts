@@ -13,6 +13,9 @@ export default defineConfigWithVueTs(
   {
     name: 'app/files-to-lint',
     files: ['**/*.{vue,ts,mts,tsx}'],
+    rules: {
+      "quotes": ["error", "double", { "avoidEscape": true }]
+    }
   },
 
   globalIgnores(['**/dist/**', '**/dist-ssr/**', '**/coverage/**']),

@@ -10,7 +10,9 @@
             class="pill"
             :class="{ active: activeType === key }"
             @click="activeType = key"
-          >{{ ct.label || 'maj' }}</button>
+          >
+            {{ ct.label || "maj" }}
+          </button>
         </div>
       </div>
     </div>
@@ -35,18 +37,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { NOTES, CHORD_TYPES, getChordFreqs } from '../musicTheory.ts'
-import { playChord, playingChordId } from '../useAudio.ts'
+import { ref } from "vue"
+import { NOTES, CHORD_TYPES, getChordFreqs } from "../musicTheory.ts"
+import { playChord, playingChordId } from "../useAudio.ts"
 
-const activeType = ref<keyof typeof CHORD_TYPES>('major')
+const activeType = ref<keyof typeof CHORD_TYPES>("major")
 
-function getChordNotes(root: typeof NOTES[number]): string {
+function getChordNotes(root: (typeof NOTES)[number]): string {
   const freqs = getChordFreqs(root, activeType.value)
-  return freqs.map(f => f.note).join(' · ')
+  return freqs.map((f) => f.note).join(" · ")
 }
 
-function handleClick(root: typeof NOTES[number]): void {
+function handleClick(root: (typeof NOTES)[number]): void {
   const freqs = getChordFreqs(root, activeType.value)
   playChord(freqs, `${root}${activeType.value}`)
 }
@@ -147,14 +149,24 @@ function handleClick(root: typeof NOTES[number]): void {
 .grid-chord.is-playing {
   border-color: var(--accent);
   background: var(--accent-dim);
-  box-shadow: 0 0 0 1px var(--accent), 0 4px 20px var(--accent-glow);
+  box-shadow:
+    0 0 0 1px var(--accent),
+    0 4px 20px var(--accent-glow);
   animation: chord-pulse 0.4s ease-out;
 }
 
 @keyframes chord-pulse {
-  0% { box-shadow: 0 0 0 0 var(--accent-glow); }
-  50% { box-shadow: 0 0 0 8px transparent; }
-  100% { box-shadow: 0 0 0 1px var(--accent), 0 4px 20px var(--accent-glow); }
+  0% {
+    box-shadow: 0 0 0 0 var(--accent-glow);
+  }
+  50% {
+    box-shadow: 0 0 0 8px transparent;
+  }
+  100% {
+    box-shadow:
+      0 0 0 1px var(--accent),
+      0 4px 20px var(--accent-glow);
+  }
 }
 
 .grid-chord-name {

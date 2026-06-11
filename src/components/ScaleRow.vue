@@ -14,28 +14,28 @@
           :title="isThisPlaying ? 'Stop progression' : 'Play all chords in sequence'"
         >
           <svg v-if="!isThisPlaying" width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
-            <polygon points="2,1 11,6 2,11"/>
+            <polygon points="2,1 11,6 2,11" />
           </svg>
           <svg v-else width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
-            <rect x="2" y="1" width="3" height="10"/>
-            <rect x="7" y="1" width="3" height="10"/>
+            <rect x="2" y="1" width="3" height="10" />
+            <rect x="7" y="1" width="3" height="10" />
           </svg>
-          <span>{{ isThisPlaying ? 'Stop' : 'Play' }}</span>
+          <span>{{ isThisPlaying ? "Stop" : "Play" }}</span>
         </button>
 
         <button
           v-if="!inSelectionMode"
           class="derive-progression-btn"
           @click="openSelectionMenu()"
-          title='Select chords to derive a progression'
+          title="Select chords to derive a progression"
         >
           <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
-            <rect x="1" y="2" width="2" height="2" rx="0.5"/>
-            <rect x="4" y="2.5" width="7" height="1"/>
-            <rect x="1" y="5" width="2" height="2" rx="0.5"/>
-            <rect x="4" y="5.5" width="7" height="1"/>
-            <rect x="1" y="8" width="2" height="2" rx="0.5"/>
-            <rect x="4" y="8.5" width="7" height="1"/>
+            <rect x="1" y="2" width="2" height="2" rx="0.5" />
+            <rect x="4" y="2.5" width="7" height="1" />
+            <rect x="1" y="5" width="2" height="2" rx="0.5" />
+            <rect x="4" y="5.5" width="7" height="1" />
+            <rect x="1" y="8" width="2" height="2" rx="0.5" />
+            <rect x="4" y="8.5" width="7" height="1" />
           </svg>
           <span>Derive Progression</span>
         </button>
@@ -46,8 +46,17 @@
           @click="confirmSelection()"
           title="Confirm your selected progression"
         >
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="2 6 5 9 10 3"/>
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 12 12"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="2 6 5 9 10 3" />
           </svg>
           <span>Confirm Selection</span>
         </button>
@@ -58,9 +67,17 @@
           @click="cancelSelection()"
           title="Exit selection mode"
         >
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-            <line x1="2" y1="2" x2="10" y2="10"/>
-            <line x1="10" y1="2" x2="2" y2="10"/>
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 12 12"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          >
+            <line x1="2" y1="2" x2="10" y2="10" />
+            <line x1="10" y1="2" x2="2" y2="10" />
           </svg>
           <span>Cancel</span>
         </button>
@@ -82,22 +99,22 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import ChordButton from './ChordButton.vue'
-import { playProgression, stopProgression, isPlaying, finishWithBase } from '../useAudio.ts'
-import { NOTES, SCALE_INTERVALS, DEFAULT_BPM, type Chord } from '../musicTheory.ts'
+import { computed, ref } from "vue"
+import ChordButton from "./ChordButton.vue"
+import { playProgression, stopProgression, isPlaying, finishWithBase } from "../useAudio.ts"
+import { NOTES, SCALE_INTERVALS, DEFAULT_BPM, type Chord } from "../musicTheory.ts"
 
 const props = withDefaults(
   defineProps<{
-    rootNote: typeof NOTES[number]
+    rootNote: (typeof NOTES)[number]
     scaleType: keyof typeof SCALE_INTERVALS
     scaleLabel: string
     chords: Chord[]
     bpm?: number
   }>(),
   {
-    bpm: DEFAULT_BPM
-  }
+    bpm: DEFAULT_BPM,
+  },
 )
 
 const buttonsSelectedState = ref<boolean[]>(Array(props.chords.length).fill(true))
@@ -106,8 +123,8 @@ const thisProgressionId = computed<string>(() => `${props.rootNote}-${props.scal
 const activeProgressionId = ref<string | null>(null)
 const inSelectionMode = ref<boolean>(false)
 
-const isThisPlaying = computed<boolean>(() =>
-  isPlaying.value && activeProgressionId.value === thisProgressionId.value
+const isThisPlaying = computed<boolean>(
+  () => isPlaying.value && activeProgressionId.value === thisProgressionId.value,
 )
 
 async function handlePlayProgression(): Promise<void> {
@@ -127,13 +144,13 @@ async function handlePlayProgression(): Promise<void> {
 
 function openSelectionMenu(): void {
   inSelectionMode.value = true
-  
+
   console.log("Current selectedState for chords:", buttonsSelectedState.value)
 }
 
 function confirmSelection(): void {
   if (!inSelectionMode.value) return
-  
+
   console.log("Current selectedState for chords:", buttonsSelectedState.value)
 
   buttonsSelectedState.value = Array(props.chords.length).fill(true)
@@ -143,13 +160,12 @@ function confirmSelection(): void {
 function cancelSelection(): void {
   inSelectionMode.value = false
   // Additional logic to reset any temporary selection state if necessary
-  
+
   console.log("Current selectedState for chords:", buttonsSelectedState.value)
 
   buttonsSelectedState.value = Array(props.chords.length).fill(true)
   inSelectionMode.value = false
 }
-
 </script>
 
 <style scoped>

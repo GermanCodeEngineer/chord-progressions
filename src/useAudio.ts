@@ -1,5 +1,5 @@
-import { ref, type Ref } from 'vue'
-import { noteToFreq, DEFAULT_BPM, type NoteFreq, type Chord } from './musicTheory'
+import { ref } from "vue"
+import { noteToFreq, DEFAULT_BPM, type NoteFreq, type Chord } from "./musicTheory"
 
 let audioCtx: AudioContext | null = null
 let masterGain: GainNode | null = null
@@ -11,7 +11,7 @@ function getCtx() {
     masterGain.gain.value = 0.55
     masterGain.connect(audioCtx.destination)
   }
-  if (audioCtx.state === 'suspended') {
+  if (audioCtx.state === "suspended") {
     audioCtx.resume()
   }
   return audioCtx
@@ -31,7 +31,7 @@ function playNote(freq: number, startTime: number, duration: number = 1.2, volum
   const endTime = startTime + duration + 0.15
 
   const filter = ctx.createBiquadFilter()
-  filter.type = 'lowpass'
+  filter.type = "lowpass"
   filter.Q.value = 0.7
   filter.frequency.setValueAtTime(Math.min(freq * 6, 4200), startTime)
   filter.frequency.exponentialRampToValueAtTime(900, startTime + Math.min(duration * 0.65, 1.2))
@@ -51,7 +51,7 @@ function playNote(freq: number, startTime: number, duration: number = 1.2, volum
 
   for (const partial of partials) {
     const osc = ctx.createOscillator()
-    osc.type = 'sine'
+    osc.type = "sine"
     osc.frequency.value = freq * partial.ratio
 
     const partialGain = ctx.createGain()
@@ -67,11 +67,11 @@ function playNote(freq: number, startTime: number, duration: number = 1.2, volum
   gainNode.connect(output)
 }
 
-export const isPlaying: Ref<boolean> = ref(false)
-export const playingChordId: Ref<string | null> = ref(null)
-export const playingProgressionStep: Ref<number | null> = ref(null)
-export const bassNotesOnly: Ref<boolean> = ref(false)
-export const finishWithBase: Ref<boolean> = ref(true)
+export const isPlaying = ref<boolean>(false)
+export const playingChordId = ref<string | null>(null)
+export const playingProgressionStep = ref<number | null>(null)
+export const bassNotesOnly = ref<boolean>(false)
+export const finishWithBase = ref<boolean>(true)
 
 let stopRequested = false
 let scheduledOscillators: number[] = []
@@ -133,7 +133,7 @@ export async function playProgression(chords: Chord[], bpm: number = DEFAULT_BPM
       playNote(freq, now + ni * 0.04, chordDuration * 0.92, 0.09)
     })
 
-    await new Promise(resolve => {
+    await new Promise((resolve) => {
       const timeout = setTimeout(resolve, chordDuration * 1000)
       scheduledOscillators.push(timeout)
     })
@@ -147,7 +147,7 @@ export async function playProgression(chords: Chord[], bpm: number = DEFAULT_BPM
 
 export function stopProgression() {
   stopRequested = true
-  scheduledOscillators.forEach(t => clearTimeout(t))
+  scheduledOscillators.forEach((t) => clearTimeout(t))
   scheduledOscillators = []
   isPlaying.value = false
   playingProgressionStep.value = null

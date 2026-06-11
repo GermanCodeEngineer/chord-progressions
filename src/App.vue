@@ -1,20 +1,20 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import ScaleRow from './components/ScaleRow.vue'
-import AllChordsGrid from './components/AllChordsGrid.vue'
-import SettingsModal from './components/SettingsModal.vue'
-import LegendModal from './components/LegendModal.vue'
+import { computed, ref } from "vue"
+import ScaleRow from "./components/ScaleRow.vue"
+import AllChordsGrid from "./components/AllChordsGrid.vue"
+import SettingsModal from "./components/SettingsModal.vue"
+import LegendModal from "./components/LegendModal.vue"
 import {
   NOTES,
   SCALE_INTERVALS,
   DEFAULT_VISIBLE_SCALES,
   DEFAULT_BPM,
   buildScaleChords,
-} from './musicTheory.ts'
+} from "./musicTheory.ts"
 
 const showSettings = ref(false)
 const showLegend = ref(false)
-const selectedRoot = ref<typeof NOTES[number]>('C')
+const selectedRoot = ref<(typeof NOTES)[number]>("C")
 const bpm = ref(DEFAULT_BPM)
 const visibleScales = ref([...DEFAULT_VISIBLE_SCALES])
 
@@ -38,8 +38,19 @@ const scaleRows = computed(() =>
           <p class="tagline">Explore diatonic chords and play progressions in any key</p>
         </div>
         <div class="header-actions">
-          <button class="header-btn" @click="showLegend = true" aria-label="Open abbreviation guide">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <button
+            class="header-btn"
+            @click="showLegend = true"
+            aria-label="Open abbreviation guide"
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
               <circle cx="12" cy="12" r="9" />
               <path d="M9.5 9a2.5 2.5 0 115 0c0 2-2.5 1.75-2.5 3.5" />
               <circle cx="12" cy="17" r="0.5" fill="currentColor" stroke="none" />
@@ -47,7 +58,14 @@ const scaleRows = computed(() =>
             <span>Legend</span>
           </button>
           <button class="header-btn" @click="showSettings = true" aria-label="Open settings">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
               <circle cx="12" cy="12" r="3" />
               <path
                 d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"
@@ -64,8 +82,8 @@ const scaleRows = computed(() =>
         <div class="section-header">
           <h2>Scale Progressions</h2>
           <p class="section-desc">
-            Diatonic chords in <strong>{{ selectedRoot }}</strong>. Click a chord to hear it, or play the full
-            progression.
+            Diatonic chords in <strong>{{ selectedRoot }}</strong
+            >. Click a chord to hear it, or play the full progression.
           </p>
         </div>
 

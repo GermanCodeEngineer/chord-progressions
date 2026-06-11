@@ -6,7 +6,9 @@
           <h2>Chord Abbreviations</h2>
           <button class="close-btn" @click="emit('update:modelValue', false)" aria-label="Close">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-              <path d="M12.7 3.3a1 1 0 00-1.4 0L8 6.6 4.7 3.3a1 1 0 00-1.4 1.4L6.6 8l-3.3 3.3a1 1 0 001.4 1.4L8 9.4l3.3 3.3a1 1 0 001.4-1.4L9.4 8l3.3-3.3a1 1 0 000-1.4z"/>
+              <path
+                d="M12.7 3.3a1 1 0 00-1.4 0L8 6.6 4.7 3.3a1 1 0 00-1.4 1.4L6.6 8l-3.3 3.3a1 1 0 001.4 1.4L8 9.4l3.3 3.3a1 1 0 001.4-1.4L9.4 8l3.3-3.3a1 1 0 000-1.4z"
+              />
             </svg>
           </button>
         </div>
@@ -54,13 +56,13 @@
 </template>
 
 <script setup lang="ts">
-import { CHORD_LEGEND, ROMAN_LEGEND } from '../musicTheory.ts'
+import { CHORD_LEGEND, ROMAN_LEGEND } from "../musicTheory.ts"
 
 defineProps<{
-  modelValue: boolean,
+  modelValue: boolean
 }>()
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(["update:modelValue"])
 </script>
 
 <style scoped>

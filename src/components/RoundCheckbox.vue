@@ -4,19 +4,15 @@ const props = defineProps<{
   modelValue: boolean
 }>()
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(["update:modelValue"])
 
 function toggle(): void {
-  emit('update:modelValue', !props.modelValue)
+  emit("update:modelValue", !props.modelValue)
 }
 </script>
 
 <template>
-  <div
-    class="circle-checkbox"
-    :class="{ 'is-checked': modelValue }"
-    @click="toggle"
-  >
+  <div class="circle-checkbox" :class="{ 'is-checked': modelValue }" @click="toggle">
     <span v-if="modelValue" class="checkmark">✓</span>
   </div>
 </template>
