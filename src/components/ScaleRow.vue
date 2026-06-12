@@ -6,7 +6,7 @@
         <span class="scale-type">{{ scaleLabel }}</span>
       </div>
 
-      <div class="scale-actions">
+      <div class="scale-actions"> <!-- TODO: Animation for derive progression and confirm/cancel -->
         <button
           class="play-progression-btn"
           :class="{ 'is-playing': isThisPlaying }"

@@ -160,7 +160,6 @@ export interface Chord {
 
 /**
  * Build chords for a given root note + scale type
- * TODO: Make class for result?
  */
 export function buildScaleChords(
   rootNote: (typeof NOTES)[number],
