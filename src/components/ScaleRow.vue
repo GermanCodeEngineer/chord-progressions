@@ -116,6 +116,9 @@ const props = withDefaults(
     bpm: DEFAULT_BPM,
   },
 )
+const emit = defineEmits<{
+  (e: "confirm-progression", chords: Chord[]): void
+}>()
 
 const buttonsSelectedState = ref<boolean[]>(Array(props.chords.length).fill(true))
 
@@ -144,25 +147,20 @@ async function handlePlayProgression(): Promise<void> {
 
 function openSelectionMenu(): void {
   inSelectionMode.value = true
-
-  console.log("Current selectedState for chords:", buttonsSelectedState.value)
 }
 
 function confirmSelection(): void {
   if (!inSelectionMode.value) return
 
-  console.log("Current selectedState for chords:", buttonsSelectedState.value)
+  const selectedChords = props.chords.filter((_, i) => buttonsSelectedState.value[i])
+
+  emit("confirm-progression", selectedChords)
 
   buttonsSelectedState.value = Array(props.chords.length).fill(true)
   inSelectionMode.value = false
 }
 
 function cancelSelection(): void {
-  inSelectionMode.value = false
-  // Additional logic to reset any temporary selection state if necessary
-
-  console.log("Current selectedState for chords:", buttonsSelectedState.value)
-
   buttonsSelectedState.value = Array(props.chords.length).fill(true)
   inSelectionMode.value = false
 }

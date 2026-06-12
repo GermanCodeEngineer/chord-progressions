@@ -10,6 +10,7 @@ import {
   DEFAULT_VISIBLE_SCALES,
   DEFAULT_BPM,
   buildScaleChords,
+  type Chord, type CustomChord, type CustomProgression, 
 } from "./musicTheory.ts"
 
 const showSettings = ref(false)
@@ -27,6 +28,60 @@ const scaleRows = computed(() =>
       chords: buildScaleChords(selectedRoot.value, scaleType),
     })),
 )
+
+const progressions = ref<CustomProgression[]>([])
+const activeProgressionId = ref<string | null>(null)
+
+const activeProgression = computed(() =>
+  progressions.value.find(p => p.id === activeProgressionId.value)
+)
+
+function createProgression(): void {
+  const newProg = {
+    id: crypto.randomUUID(),
+    name: `Progression ${progressions.value.length + 1}`,
+    chords: []
+  }
+
+  progressions.value.push(newProg)
+  activeProgressionId.value = newProg.id
+}
+
+function deleteProgression(id: string): void {
+  progressions.value = progressions.value.filter(p => p.id !== id)
+
+  if (activeProgressionId.value === id) {
+    activeProgressionId.value = progressions.value[0]?.id || null
+  }
+}
+
+function addChordToActive(baseChord: Chord) {
+  if (!activeProgression.value) return
+
+  activeProgression.value.chords.push({
+    ...baseChord,
+    id: crypto.randomUUID(),
+    inversion: 0,
+    transpose: 0
+  })
+}
+
+function createProgressionFromSelection(chords: Chord[]) {
+  const newProg = {
+    id: crypto.randomUUID(),
+    name: `Progression ${progressions.value.length + 1}`,
+    chords: chords.map(c => ({
+      ...c,
+      id: crypto.randomUUID(),
+      inversion: 0,
+      transpose: 0
+    }))
+  }
+
+  progressions.value.push(newProg)
+  activeProgressionId.value = newProg.id
+}
+
 </script>
 
 <template>
@@ -96,9 +151,22 @@ const scaleRows = computed(() =>
             :scale-label="row.scaleLabel"
             :chords="row.chords"
             :bpm="bpm"
+            @confirm-progression="createProgressionFromSelection"
           />
         </div>
       </section>
+
+      <div class="progression-tabs">
+        <button
+          v-for="p in progressions"
+          :key="p.id"
+          @click="activeProgressionId = p.id"
+        >
+          {{ p.name }}
+        </button>
+
+        <button @click="createProgression">+ New</button>
+      </div>
 
       <section class="section">
         <div class="section-header">
@@ -107,6 +175,31 @@ const scaleRows = computed(() =>
         </div>
 
         <AllChordsGrid />
+      </section>
+
+      <section id="custom-progressions">
+        <!-- TODO: move to own component? -->
+        <!-- TODO: use improved chord buttons for this -->
+        <!-- TODO: properly style -->
+        <div v-if="activeProgression">
+          <h3>{{ activeProgression.name }}</h3>
+
+          <div class="progression">
+            <div
+              v-for="(chord, index) in activeProgression.chords"
+              :key="chord.id"
+              class="chord-card"
+            >
+              {{ chord.label }}
+
+              <button @click="chord.inversion++">Invert</button>
+              <button @click="chord.transpose++">↑</button>
+              <button @click="chord.transpose--">↓</button>
+              <button @click="activeProgression.chords.splice(index, 1)">✕</button>
+            </div>
+          </div>
+        </div>
+
       </section>
     </main>
 

@@ -158,6 +158,17 @@ export interface Chord {
   isOctavatedBase: boolean
 }
 
+export interface CustomChord extends Chord {
+  inversion: number // Example: C-E-G can become G-C-E
+  transpose: number // in semitones
+}
+
+export interface CustomProgression {
+  id: string
+  name: string
+  chords: CustomChord[]
+}
+
 /**
  * Build chords for a given root note + scale type
  */
@@ -240,4 +251,28 @@ export function getChordFreqs(
     const octaveShift = Math.floor(ci / 12)
     return { note: NOTES[noteIdx]!, octave: 4 + octaveShift }
   })
+}
+
+/**
+ * Compute a custom chord's note frequencies by applying inversion and transpose
+ */
+export function computeChordNotes(chord: CustomChord): NoteFreq[] {
+  const base = getChordFreqs(chord.root, chord.quality)
+
+  let notes = base.map(n => {
+    const idx = (NOTES.indexOf(n.note) + chord.transpose + 12) % 12
+    return {
+      note: NOTES[idx]!,
+      octave: n.octave + Math.floor((NOTES.indexOf(n.note) + chord.transpose) / 12)
+    }
+  })
+
+  for (let i = 0; i < chord.inversion; i++) {
+    const first = notes.shift()
+    if (first) {
+      notes.push({ note: first.note, octave: first.octave + 1 })
+    }
+  }
+
+  return notes
 }
