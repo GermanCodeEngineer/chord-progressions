@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from "vue"
 import ScaleProgressionRow from "./components/ScaleProgressionRow.vue"
+import CustomProgressionRow from "./components/CustomProgressionRow.vue"
 import AllChordsGrid from "./components/AllChordsGrid.vue"
 import SettingsModal from "./components/SettingsModal.vue"
 import LegendModal from "./components/LegendModal.vue"
@@ -30,33 +31,35 @@ const scaleRows = computed(() =>
     })),
 )
 
-const progressions = ref<CustomProgression[]>([])
+const customProgressions = ref<CustomProgression[]>([])
 const activeProgressionId = ref<string | null>(null)
 
 const activeProgression = computed(() =>
-  progressions.value.find((p) => p.id === activeProgressionId.value),
+  customProgressions.value.find((p) => p.id === activeProgressionId.value),
 )
 
 function createProgression(): void {
-  const newProg = {
+  const newProg = <CustomProgression>{
     id: crypto.randomUUID(),
-    name: `Progression ${progressions.value.length + 1}`,
+    name: `Progression ${customProgressions.value.length + 1}`,
     chords: [],
   }
 
-  progressions.value.push(newProg)
+  customProgressions.value.push(newProg)
   activeProgressionId.value = newProg.id
 }
 
 function deleteProgression(id: string): void {
-  progressions.value = progressions.value.filter((p) => p.id !== id)
+  // TODO: use
+  customProgressions.value = customProgressions.value.filter((p) => p.id !== id)
 
   if (activeProgressionId.value === id) {
-    activeProgressionId.value = progressions.value[0]?.id || null
+    activeProgressionId.value = customProgressions.value[0]?.id || null
   }
 }
 
 function addChordToActive(baseChord: Chord) {
+  // TODO: use
   if (!activeProgression.value) return
 
   activeProgression.value.chords.push({
@@ -70,7 +73,7 @@ function addChordToActive(baseChord: Chord) {
 function createProgressionFromSelection(chords: Chord[]) {
   const newProg = {
     id: crypto.randomUUID(),
-    name: `Progression ${progressions.value.length + 1}`,
+    name: `Progression ${customProgressions.value.length + 1}`,
     chords: chords.map((c) => ({
       ...c,
       id: crypto.randomUUID(),
@@ -79,7 +82,7 @@ function createProgressionFromSelection(chords: Chord[]) {
     })),
   }
 
-  progressions.value.push(newProg)
+  customProgressions.value.push(newProg)
   activeProgressionId.value = newProg.id
 }
 </script>
@@ -157,12 +160,36 @@ function createProgressionFromSelection(chords: Chord[]) {
       </section>
 
       <div class="progression-tabs">
-        <button v-for="p in progressions" :key="p.id" @click="activeProgressionId = p.id">
+        <!-- TODO: remove when deprecated-->
+        <button v-for="p in customProgressions" :key="p.id" @click="activeProgressionId = p.id">
           {{ p.name }}
         </button>
 
         <button @click="createProgression">+ New</button>
       </div>
+
+      <section class="section">
+        <div class="section-header">
+          <h2>Custom Progressions</h2>
+          <p class="section-desc">
+            Custom Combinations of chords. Derive a progression from a scale. Add, switch or delete
+            chords.
+          </p>
+        </div>
+
+        <div class="progressions-list">
+          <CustomProgressionRow
+            v-for="row in scaleRows"
+            :key="row.scaleType"
+            :root-note="selectedRoot"
+            :scale-type="row.scaleType"
+            :scale-label="row.scaleLabel"
+            :chords="row.chords"
+            :bpm="bpm"
+            @confirm-progression="createProgressionFromSelection"
+          />
+        </div>
+      </section>
 
       <section class="section">
         <div class="section-header">

@@ -1,3 +1,4 @@
+<!-- TODO: adapt to custom progression -->
 <template>
   <div class="scale-row">
     <div class="scale-header">
@@ -6,8 +7,7 @@
         <span class="scale-type">{{ scaleLabel }}</span>
       </div>
 
-      <div class="scale-actions">
-        <!-- TODO: Animation for derive progression and confirm/cancel -->
+      <div class="scale-actions"> <!-- TODO: Animation for derive progression and confirm/cancel -->
         <button
           class="play-progression-btn"
           :class="{ 'is-playing': isThisPlaying }"
@@ -123,7 +123,7 @@ const emit = defineEmits<{
 
 const buttonsSelectedState = ref<boolean[]>(Array(props.chords.length).fill(true))
 
-const thisProgressionId = computed<string>(() => `${props.rootNote}-${props.progression-type}`)
+const thisProgressionId = computed<string>(() => `${props.rootNote}-${props.scaleType}`)
 const activeProgressionId = ref<string | null>(null)
 const inSelectionMode = ref<boolean>(false)
 
