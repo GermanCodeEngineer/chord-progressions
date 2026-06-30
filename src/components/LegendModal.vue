@@ -1,10 +1,10 @@
 <template>
   <Teleport to="body">
-    <div v-if="modelValue" class="modal-backdrop" @click.self="emit('update:modelValue', false)">
+    <div v-if="modelValue" class="modalBackdrop" @click.self="emit('update:modelValue', false)">
       <div class="modal" role="dialog" aria-modal="true" aria-label="Chord Abbreviations">
-        <div class="modal-header">
+        <div class="modalHeader">
           <h2>Chord Abbreviations</h2>
-          <button class="close-btn" @click="emit('update:modelValue', false)" aria-label="Close">
+          <button class="closeBtn" @click="emit('update:modelValue', false)" aria-label="Close">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
               <path
                 d="M12.7 3.3a1 1 0 00-1.4 0L8 6.6 4.7 3.3a1 1 0 00-1.4 1.4L6.6 8l-3.3 3.3a1 1 0 001.4 1.4L8 9.4l3.3 3.3a1 1 0 001.4-1.4L9.4 8l3.3-3.3a1 1 0 000-1.4z"
@@ -13,42 +13,42 @@
           </button>
         </div>
 
-        <div class="modal-body">
-          <div class="legend-section">
+        <div class="modalBody">
+          <div class="legendSection">
             <h3>Chord symbols</h3>
-            <p class="section-hint">Suffixes appended to a root note (e.g. C, F#, Bb)</p>
-            <dl class="legend-list">
-              <div v-for="entry in CHORD_LEGEND" :key="entry.symbol" class="legend-item">
+            <p class="sectionHint">Suffixes appended to a root note (e.g. C, F#, Bb)</p>
+            <dl class="legendList">
+              <div v-for="entry in CHORD_LEGEND" :key="entry.symbol" class="legendItem">
                 <dt>
-                  <span class="legend-symbol">{{ entry.symbol }}</span>
-                  <span class="legend-example">{{ entry.example }}</span>
+                  <span class="legendSymbol">{{ entry.symbol }}</span>
+                  <span class="legendExample">{{ entry.example }}</span>
                 </dt>
                 <dd>
-                  <span class="legend-name">{{ entry.name }}</span>
-                  <span class="legend-desc">{{ entry.description }}</span>
+                  <span class="legendName">{{ entry.name }}</span>
+                  <span class="legendDesc">{{ entry.description }}</span>
                 </dd>
               </div>
             </dl>
           </div>
 
-          <div class="legend-section">
+          <div class="legendSection">
             <h3>Roman numerals</h3>
-            <p class="section-hint">Scale degree labels shown above each chord in progressions</p>
-            <dl class="legend-list legend-list-compact">
-              <div v-for="entry in ROMAN_LEGEND" :key="entry.symbol" class="legend-item">
+            <p class="sectionHint">Scale degree labels shown above each chord in progressions</p>
+            <dl class="legendList legendListCompact">
+              <div v-for="entry in ROMAN_LEGEND" :key="entry.symbol" class="legendItem">
                 <dt>
-                  <span class="legend-symbol roman">{{ entry.symbol }}</span>
+                  <span class="legendSymbol roman">{{ entry.symbol }}</span>
                 </dt>
                 <dd>
-                  <span class="legend-desc">{{ entry.description }}</span>
+                  <span class="legendDesc">{{ entry.description }}</span>
                 </dd>
               </div>
             </dl>
           </div>
         </div>
 
-        <div class="modal-footer">
-          <button class="btn-primary" @click="emit('update:modelValue', false)">Close</button>
+        <div class="modalFooter">
+          <button class="btnPrimary" @click="emit('update:modelValue', false)">Close</button>
         </div>
       </div>
     </div>
@@ -66,7 +66,7 @@ const emit = defineEmits(["update:modelValue"])
 </script>
 
 <style scoped>
-.modal-backdrop {
+.modalBackdrop {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.7);
@@ -90,21 +90,21 @@ const emit = defineEmits(["update:modelValue"])
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
 }
 
-.modal-header {
+.modalHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 20px 24px;
-  border-bottom: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--borderSubtle);
 }
 
-.modal-header h2 {
+.modalHeader h2 {
   font-size: 16px;
   font-weight: 600;
   color: var(--text);
 }
 
-.close-btn {
+.closeBtn {
   width: 32px;
   height: 32px;
   display: flex;
@@ -113,17 +113,17 @@ const emit = defineEmits(["update:modelValue"])
   background: transparent;
   border: 1px solid transparent;
   border-radius: 6px;
-  color: var(--text-muted);
+  color: var(--textMuted);
   transition: all 0.15s;
 }
 
-.close-btn:hover {
-  background: var(--surface-raised);
+.closeBtn:hover {
+  background: var(--surfaceRaised);
   border-color: var(--border);
   color: var(--text);
 }
 
-.modal-body {
+.modalBody {
   flex: 1;
   overflow-y: auto;
   padding: 24px;
@@ -132,91 +132,91 @@ const emit = defineEmits(["update:modelValue"])
   gap: 28px;
 }
 
-.legend-section h3 {
+.legendSection h3 {
   font-size: 11px;
   font-weight: 600;
-  color: var(--text-muted);
+  color: var(--textMuted);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   margin-bottom: 8px;
 }
 
-.section-hint {
+.sectionHint {
   font-size: 12px;
-  color: var(--text-muted);
+  color: var(--textMuted);
   margin-bottom: 14px;
 }
 
-.legend-list {
+.legendList {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.legend-item {
+.legendItem {
   display: grid;
   grid-template-columns: 88px 1fr;
   gap: 12px;
   padding: 10px 12px;
-  background: var(--surface-raised);
+  background: var(--surfaceRaised);
   border: 1px solid var(--border);
   border-radius: 8px;
 }
 
-.legend-item dt {
+.legendItem dt {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
-.legend-symbol {
-  font-family: var(--font-mono);
+.legendSymbol {
+  font-family: var(--fontMono);
   font-size: 14px;
   font-weight: 600;
   color: var(--accent);
 }
 
-.legend-symbol.roman {
+.legendSymbol.roman {
   font-size: 16px;
 }
 
-.legend-example {
-  font-family: var(--font-mono);
+.legendExample {
+  font-family: var(--fontMono);
   font-size: 11px;
-  color: var(--text-muted);
+  color: var(--textMuted);
 }
 
-.legend-item dd {
+.legendItem dd {
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
 
-.legend-name {
+.legendName {
   font-size: 13px;
   font-weight: 600;
   color: var(--text);
 }
 
-.legend-desc {
+.legendDesc {
   font-size: 12px;
-  color: var(--text-muted);
+  color: var(--textMuted);
   line-height: 1.45;
 }
 
-.legend-list-compact .legend-item {
+.legendListCompact .legendItem {
   grid-template-columns: 40px 1fr;
   align-items: center;
 }
 
-.modal-footer {
+.modalFooter {
   display: flex;
   justify-content: flex-end;
   padding: 16px 24px;
-  border-top: 1px solid var(--border-subtle);
+  border-top: 1px solid var(--borderSubtle);
 }
 
-.btn-primary {
+.btnPrimary {
   padding: 8px 20px;
   background: var(--accent);
   border: none;
@@ -227,8 +227,8 @@ const emit = defineEmits(["update:modelValue"])
   transition: all 0.15s;
 }
 
-.btn-primary:hover {
+.btnPrimary:hover {
   background: #f8b94a;
-  box-shadow: 0 4px 16px var(--accent-glow);
+  box-shadow: 0 4px 16px var(--accentGlow);
 }
 </style>

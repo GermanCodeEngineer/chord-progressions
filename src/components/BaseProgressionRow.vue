@@ -1,15 +1,12 @@
 <template>
-  <div :class="styles['progression-row']">
-    <div :class="styles['progression-header']">
-      <slot name="progression-title"/>
+  <div :class="styles['progressionRow']">
+    <div :class="styles['progressionHeader']">
+      <slot name="progressionTitle" />
 
-      <div :class="styles['progression-actions']">
+      <div :class="styles['progressionActions']">
         <!-- TODO: Animation for derive progression and confirm/cancel -->
         <button
-          :class="[
-            styles['play-progression-btn'],
-            isThisPlaying ? styles['is-playing'] : ''
-          ]"
+          :class="[styles['playProgressionBtn'], isThisPlaying ? styles['isPlaying'] : '']"
           @click="handlePlayProgression"
           :title="isThisPlaying ? 'Stop progression' : 'Play all chords in sequence'"
         >
@@ -25,7 +22,7 @@
 
         <button
           v-if="!inSelectionMode"
-          :class="styles['derive-progression-btn']"
+          :class="styles['deriveProgressionBtn']"
           @click="openSelectionMenu()"
           title="Select chords to derive a progression"
         >
@@ -42,7 +39,7 @@
 
         <button
           v-if="inSelectionMode"
-          :class="styles['confirm-selection-btn']"
+          :class="styles['confirmSelectionBtn']"
           @click="confirmSelection()"
           title="Confirm your selected progression"
         >
@@ -63,7 +60,7 @@
 
         <button
           v-if="inSelectionMode"
-          :class="styles['cancel-selection-btn']"
+          :class="styles['cancelSelectionBtn']"
           @click="cancelSelection()"
           title="Exit selection mode"
         >
@@ -84,7 +81,7 @@
       </div>
     </div>
 
-    <div :class="styles['chords-row']">
+    <div :class="styles['chordsRow']">
       <ChordButton
         v-for="(chord, i) in chords"
         :key="chord.id"

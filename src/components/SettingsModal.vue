@@ -1,10 +1,10 @@
 <template>
   <Teleport to="body">
-    <div v-if="modelValue" class="modal-backdrop" @click.self="emit('update:modelValue', false)">
+    <div v-if="modelValue" class="modalBackdrop" @click.self="emit('update:modelValue', false)">
       <div class="modal" role="dialog" aria-modal="true" aria-label="Scale Settings">
-        <div class="modal-header">
+        <div class="modalHeader">
           <h2>Scale Settings</h2>
-          <button class="close-btn" @click="emit('update:modelValue', false)" aria-label="Close">
+          <button class="closeBtn" @click="emit('update:modelValue', false)" aria-label="Close">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
               <path
                 d="M12.7 3.3a1 1 0 00-1.4 0L8 6.6 4.7 3.3a1 1 0 00-1.4 1.4L6.6 8l-3.3 3.3a1 1 0 001.4 1.4L8 9.4l3.3 3.3a1 1 0 001.4-1.4L9.4 8l3.3-3.3a1 1 0 000-1.4z"
@@ -13,14 +13,14 @@
           </button>
         </div>
 
-        <div class="modal-body">
-          <div class="settings-section">
+        <div class="modalBody">
+          <div class="settingsSection">
             <h3>Root Note</h3>
-            <div class="note-grid">
+            <div class="noteGrid">
               <button
                 v-for="note in ALL_NOTES"
                 :key="note"
-                class="note-btn"
+                class="noteBtn"
                 :class="{ active: selectedRoot === note }"
                 @click="emit('update:selectedRoot', note)"
               >
@@ -29,14 +29,14 @@
             </div>
           </div>
 
-          <div class="settings-section">
+          <div class="settingsSection">
             <h3>Visible Scales</h3>
-            <p class="section-hint">Select which scales appear in the Progressions section</p>
-            <div class="scales-list">
+            <p class="sectionHint">Select which scales appear in the Progressions section</p>
+            <div class="scalesList">
               <label
                 v-for="(scale, key) in SCALE_INTERVALS"
                 :key="key"
-                class="scale-check"
+                class="scaleCheck"
                 :class="{ checked: visibleScales.includes(key) }"
               >
                 <input
@@ -45,33 +45,33 @@
                   @change="toggleScale(key)"
                 />
                 <span class="checkmark"></span>
-                <span class="scale-check-label">{{ scale.label }}</span>
+                <span class="scaleCheckLabel">{{ scale.label }}</span>
               </label>
             </div>
           </div>
 
-          <div class="settings-section">
+          <div class="settingsSection">
             <h3>Playback</h3>
-            <div class="toggle-list">
-              <label class="toggle-row">
-                <span class="toggle-copy">
-                  <span class="toggle-label">Finish with base chord</span>
-                  <span class="section-hint inline"
+            <div class="toggleList">
+              <label class="toggleRow">
+                <span class="toggleCopy">
+                  <span class="toggleLabel">Finish with base chord</span>
+                  <span class="sectionHint inline"
                     >Play the octavated base chord of the scale at the end</span
                   >
                 </span>
-                <input type="checkbox" class="toggle-input" v-model="finishWithBase" />
-                <span class="toggle-switch" aria-hidden="true"></span>
+                <input type="checkbox" class="toggleInput" v-model="finishWithBase" />
+                <span class="toggleSwitch" aria-hidden="true"></span>
               </label>
-              <label class="toggle-row">
-                <span class="toggle-copy">
-                  <span class="toggle-label">Bass notes only</span>
-                  <span class="section-hint inline"
+              <label class="toggleRow">
+                <span class="toggleCopy">
+                  <span class="toggleLabel">Bass notes only</span>
+                  <span class="sectionHint inline"
                     >Play only the root note of each chord instead of the full chord</span
                   >
                 </span>
                 <input type="checkbox" class="toggle-input" v-model="bassNotesOnly" />
-                <span class="toggle-switch" aria-hidden="true"></span>
+                <span class="toggle-switch" ariaHidden="true"></span>
               </label>
             </div>
           </div>
@@ -150,7 +150,7 @@ function resetDefaults() {
 </script>
 
 <style scoped>
-.modal-backdrop {
+.modalBackdrop {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.7);
@@ -174,21 +174,21 @@ function resetDefaults() {
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
 }
 
-.modal-header {
+.modalHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 20px 24px;
-  border-bottom: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--borderSubtle);
 }
 
-.modal-header h2 {
+.modalHeader h2 {
   font-size: 16px;
   font-weight: 600;
   color: var(--text);
 }
 
-.close-btn {
+.closeBtn {
   width: 32px;
   height: 32px;
   display: flex;
@@ -197,17 +197,17 @@ function resetDefaults() {
   background: transparent;
   border: 1px solid transparent;
   border-radius: 6px;
-  color: var(--text-muted);
+  color: var(--textMuted);
   transition: all 0.15s;
 }
 
-.close-btn:hover {
-  background: var(--surface-raised);
+.closeBtn:hover {
+  background: var(--surfaceRaised);
   border-color: var(--border);
   color: var(--text);
 }
 
-.modal-body {
+.modalBody {
   flex: 1;
   overflow-y: auto;
   padding: 24px;
@@ -216,65 +216,65 @@ function resetDefaults() {
   gap: 28px;
 }
 
-.settings-section h3 {
+.settingsSection h3 {
   font-size: 11px;
   font-weight: 600;
-  color: var(--text-muted);
+  color: var(--textMuted);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   margin-bottom: 12px;
 }
 
-.section-hint {
+.sectionHint {
   font-size: 12px;
-  color: var(--text-muted);
+  color: var(--textMuted);
   margin-bottom: 12px;
 }
 
-.section-hint.inline {
+.sectionHint.inline {
   display: block;
   margin-bottom: 0;
   margin-top: 4px;
 }
 
-.toggle-list {
+.toggleList {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.toggle-row {
+.toggleRow {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
   padding: 12px 14px;
-  background: var(--surface-raised);
+  background: var(--surfaceRaised);
   border: 1px solid var(--border);
   border-radius: 8px;
   cursor: pointer;
 }
 
-.toggle-copy {
+.toggleCopy {
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
 
-.toggle-label {
+.toggleLabel {
   font-size: 13px;
   font-weight: 500;
   color: var(--text);
 }
 
-.toggle-input {
+.toggleInput {
   position: absolute;
   opacity: 0;
   width: 0;
   height: 0;
 }
 
-.toggle-switch {
+.toggleSwitch {
   position: relative;
   width: 42px;
   height: 24px;
@@ -284,7 +284,7 @@ function resetDefaults() {
   transition: background 0.15s;
 }
 
-.toggle-switch::after {
+.toggleSwitch::after {
   content: "";
   position: absolute;
   top: 3px;
@@ -296,80 +296,80 @@ function resetDefaults() {
   transition: transform 0.15s;
 }
 
-.toggle-input:checked + .toggle-switch {
+.toggleInput:checked + .toggleSwitch {
   background: var(--accent);
 }
 
-.toggle-input:checked + .toggle-switch::after {
+.toggleInput:checked + .toggleSwitch::after {
   transform: translateX(18px);
   background: #000;
 }
 
-.toggle-input:focus-visible + .toggle-switch {
-  box-shadow: 0 0 0 2px var(--accent-glow);
+.toggleInput:focusvisible + .toggleSwitch {
+  box-shadow: 0 0 0 2px var(--accentGlow);
 }
 
 /* Note grid */
-.note-grid {
+.noteGrid {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
 }
 
-.note-btn {
+.noteBtn {
   min-width: 44px;
   padding: 8px 10px;
-  background: var(--surface-raised);
+  background: var(--surfaceRaised);
   border: 1px solid var(--border);
   border-radius: 6px;
-  color: var(--text-muted);
-  font-family: var(--font-mono);
+  color: var(--textMuted);
+  font-family: var(--fontMono);
   font-size: 13px;
   font-weight: 500;
   transition: all 0.15s;
 }
 
-.note-btn:hover {
+.noteBtn:hover {
   border-color: var(--accent);
   color: var(--accent);
 }
 
-.note-btn.active {
+.noteBtn.active {
   border-color: var(--accent);
-  background: var(--accent-dim);
+  background: var(--accentDim);
   color: var(--accent);
-  box-shadow: 0 0 8px var(--accent-glow);
+  box-shadow: 0 0 8px var(--accentGlow);
 }
 
 /* Scales checklist */
-.scales-list {
+.scalesList {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
 }
 
-.scale-check {
+.scaleCheck {
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 8px 10px;
-  background: var(--surface-raised);
+  background: var(--surfaceRaised);
   border: 1px solid var(--border);
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.15s;
 }
 
-.scale-check:hover {
+.scaleCheck:hover {
   border-color: var(--accent);
 }
 
-.scale-check.checked {
+.scaleCheck.checked {
   border-color: var(--accent);
-  background: var(--accent-dim);
+  background: var(--accentDim);
 }
 
-.scale-check input[type="checkbox"] {
+.scaleCheck input[type="checkbox"] {
   display: none;
 }
 
@@ -383,12 +383,12 @@ function resetDefaults() {
   transition: all 0.15s;
 }
 
-.scale-check.checked .checkmark {
+.scaleCheck.checked .checkmark {
   background: var(--accent);
   border-color: var(--accent);
 }
 
-.scale-check.checked .checkmark::after {
+.scaleCheck.checked .checkmark::after {
   content: "";
   position: absolute;
   left: 3px;
@@ -401,20 +401,20 @@ function resetDefaults() {
   transform: rotate(45deg);
 }
 
-.scale-check-label {
+.scaleCheckLabel {
   font-size: 12px;
   font-weight: 500;
   color: var(--text);
 }
 
 /* BPM slider */
-.bpm-control {
+.bpmControl {
   display: flex;
   align-items: center;
   gap: 16px;
 }
 
-.bpm-slider {
+.bpmSlider {
   flex: 1;
   appearance: none;
   -webkit-appearance: none;
@@ -424,18 +424,18 @@ function resetDefaults() {
   outline: none;
 }
 
-.bpm-slider::-webkit-slider-thumb {
+.bpmSlider::-webkit-slider-thumb {
   -webkit-appearance: none;
   width: 16px;
   height: 16px;
   border-radius: 50%;
   background: var(--accent);
   cursor: pointer;
-  box-shadow: 0 0 8px var(--accent-glow);
+  box-shadow: 0 0 8px var(--accentGlow);
 }
 
-.bpm-value {
-  font-family: var(--font-mono);
+.bpmValue {
+  font-family: var(--fontMono);
   font-size: 13px;
   font-weight: 600;
   color: var(--accent);
@@ -444,31 +444,31 @@ function resetDefaults() {
 }
 
 /* Footer buttons */
-.modal-footer {
+.modalFooter {
   display: flex;
   gap: 10px;
   justify-content: flex-end;
   padding: 16px 24px;
-  border-top: 1px solid var(--border-subtle);
+  border-top: 1px solid var(--borderSubtle);
 }
 
-.btn-secondary {
+.btnSecondary {
   padding: 8px 16px;
   background: transparent;
   border: 1px solid var(--border);
   border-radius: 6px;
-  color: var(--text-muted);
+  color: var(--textMuted);
   font-size: 13px;
   font-weight: 500;
   transition: all 0.15s;
 }
 
-.btn-secondary:hover {
-  border-color: var(--text-muted);
+.btnSecondary:hover {
+  border-color: var(--textMuted);
   color: var(--text);
 }
 
-.btn-primary {
+.btnPrimary {
   padding: 8px 20px;
   background: var(--accent);
   border: none;
@@ -479,8 +479,8 @@ function resetDefaults() {
   transition: all 0.15s;
 }
 
-.btn-primary:hover {
+.btnPrimary:hover {
   background: #f8b94a;
-  box-shadow: 0 4px 16px var(--accent-glow);
+  box-shadow: 0 4px 16px var(--accentGlow);
 }
 </style>

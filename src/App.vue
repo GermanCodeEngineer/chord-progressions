@@ -89,18 +89,14 @@ function createProgressionFromSelection(chords: Chord[]) {
 
 <template>
   <div class="app">
-    <header class="site-header">
-      <div class="header-inner">
+    <header class="siteHeader">
+      <div class="headerInner">
         <div class="brand">
           <h1>Chord Progressions</h1>
           <p class="tagline">Explore diatonic chords and play progressions in any key</p>
         </div>
-        <div class="header-actions">
-          <button
-            class="header-btn"
-            @click="showLegend = true"
-            aria-label="Open abbreviation guide"
-          >
+        <div class="headerActions">
+          <button class="headerBtn" @click="showLegend = true" aria-label="Open abbreviation guide">
             <svg
               width="18"
               height="18"
@@ -115,7 +111,7 @@ function createProgressionFromSelection(chords: Chord[]) {
             </svg>
             <span>Legend</span>
           </button>
-          <button class="header-btn" @click="showSettings = true" aria-label="Open settings">
+          <button class="headerBtn" @click="showSettings = true" aria-label="Open settings">
             <svg
               width="18"
               height="18"
@@ -135,17 +131,17 @@ function createProgressionFromSelection(chords: Chord[]) {
       </div>
     </header>
 
-    <main class="main-content">
+    <main class="mainContent">
       <section class="section">
-        <div class="section-header">
+        <div class="sectionHeader">
           <h2>Scale Progressions</h2>
-          <p class="section-desc">
+          <p class="sectionDesc">
             Diatonic chords in <strong>{{ selectedRoot }}</strong
             >. Click a chord to hear it, or play the full progression.
           </p>
         </div>
 
-        <div class="progressions-list">
+        <div class="progressionsList">
           <ScaleProgressionRow
             v-for="row in scaleRows"
             :key="row.scaleType"
@@ -159,7 +155,7 @@ function createProgressionFromSelection(chords: Chord[]) {
         </div>
       </section>
 
-      <div class="progression-tabs">
+      <div class="progressionTabs">
         <!-- TODO: remove when deprecated-->
         <button v-for="p in customProgressions" :key="p.id" @click="activeProgressionId = p.id">
           {{ p.name }}
@@ -169,15 +165,15 @@ function createProgressionFromSelection(chords: Chord[]) {
       </div>
 
       <section class="section">
-        <div class="section-header">
+        <div class="sectionHeader">
           <h2>Custom Progressions</h2>
-          <p class="section-desc">
+          <p class="sectionDesc">
             Custom Combinations of chords. Derive a progression from a scale. Add, switch or delete
             chords.
           </p>
         </div>
 
-        <div class="progressions-list">
+        <div class="progressionsList">
           <CustomProgressionRow
             v-for="row in scaleRows"
             :key="row.scaleType"
@@ -192,15 +188,15 @@ function createProgressionFromSelection(chords: Chord[]) {
       </section>
 
       <section class="section">
-        <div class="section-header">
+        <div class="sectionHeader">
           <h2>All Chords</h2>
-          <p class="section-desc">Browse every root note for a chosen chord type.</p>
+          <p class="sectionDesc">Browse every root note for a chosen chord type.</p>
         </div>
 
         <AllChordsGrid />
       </section>
 
-      <section id="custom-progressions">
+      <section id="customProgressions">
         <!-- TODO: move to own component? -->
         <!-- TODO: use improved chord buttons for this -->
         <!-- TODO: properly style -->
@@ -211,7 +207,7 @@ function createProgressionFromSelection(chords: Chord[]) {
             <div
               v-for="(chord, index) in activeProgression.chords"
               :key="chord.id"
-              class="chord-card"
+              class="chordCard"
             >
               {{ chord.label }}
 
@@ -243,15 +239,15 @@ function createProgressionFromSelection(chords: Chord[]) {
   flex-direction: column;
 }
 
-.site-header {
-  border-bottom: 1px solid var(--border-subtle);
+.siteHeader {
+  border-bottom: 1px solid var(--borderSubtle);
   background: var(--surface);
   position: sticky;
   top: 0;
   z-index: 100;
 }
 
-.header-inner {
+.headerInner {
   max-width: 960px;
   margin: 0 auto;
   padding: 20px 24px;
@@ -270,38 +266,38 @@ function createProgressionFromSelection(chords: Chord[]) {
 
 .tagline {
   font-size: 13px;
-  color: var(--text-muted);
+  color: var(--textMuted);
   margin-top: 4px;
 }
 
-.header-actions {
+.headerActions {
   display: flex;
   align-items: center;
   gap: 8px;
   flex-shrink: 0;
 }
 
-.header-btn {
+.headerBtn {
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 8px 16px;
-  background: var(--surface-raised);
+  background: var(--surfaceRaised);
   border: 1px solid var(--border);
   border-radius: 8px;
-  color: var(--text-muted);
+  color: var(--textMuted);
   font-size: 13px;
   font-weight: 500;
   transition: all 0.15s;
 }
 
-.header-btn:hover {
+.headerBtn:hover {
   border-color: var(--accent);
   color: var(--accent);
-  background: var(--accent-dim);
+  background: var(--accentDim);
 }
 
-.main-content {
+.mainContent {
   flex: 1;
   max-width: 960px;
   width: 100%;
@@ -312,46 +308,46 @@ function createProgressionFromSelection(chords: Chord[]) {
   gap: 48px;
 }
 
-.section-header {
+.sectionHeader {
   margin-bottom: 8px;
 }
 
-.section-header h2 {
+.sectionHeader h2 {
   font-size: 13px;
   font-weight: 600;
-  color: var(--text-muted);
+  color: var(--textMuted);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   margin-bottom: 6px;
 }
 
-.section-desc {
+.sectionDesc {
   font-size: 14px;
-  color: var(--text-muted);
+  color: var(--textMuted);
   line-height: 1.5;
 }
 
-.section-desc strong {
+.sectionDesc strong {
   color: var(--accent);
-  font-family: var(--font-mono);
+  font-family: var(--fontMono);
   font-weight: 600;
 }
 
-.progressions-list {
+.progressionsList {
   background: var(--surface);
-  border: 1px solid var(--border-subtle);
+  border: 1px solid var(--borderSubtle);
   border-radius: 12px;
   padding: 0 20px;
   margin-top: 16px;
 }
 
-@media (max-width: 600px) {
-  .header-inner {
+@media (maxwidth: 600px) {
+  .headerInner {
     flex-direction: column;
     align-items: flex-start;
   }
 
-  .header-btn span {
+  .headerBtn span {
     display: none;
   }
 }

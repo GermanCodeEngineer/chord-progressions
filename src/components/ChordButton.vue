@@ -1,22 +1,22 @@
 <template>
   <div
-    class="chord-card"
+    class="chordCard"
     :class="{
-      'is-playing': isActive,
-      'is-progression-active': isProgressionActive,
+      'isPlaying': isActive, // TODO: investigate what isActive and isProgressionActive are
+      'isProgressionActive': isProgressionActive,
       [`quality-${chord.quality}`]: true,
     }"
     :title="`${chord.label}, click to play`"
     @click="handleCardClick"
   >
     <!-- Isolated wrapper prevents the checkbox click from triggering the card audio -->
-    <div class="checkbox-wrapper" v-show="showSelectBox" @click.stop>
+    <div class="checkboxWrapper" v-show="showSelectBox" @click.stop>
       <RoundCheckbox v-model="isSelected" />
     </div>
 
-    <span class="chord-roman">{{ chord.roman }}</span>
-    <span class="chord-name">{{ chord.label }}</span>
-    <span class="chord-quality-badge">{{ qualityLabel }}</span>
+    <span class="chordRoman">{{ chord.roman }}</span>
+    <span class="chordName">{{ chord.label }}</span>
+    <span class="chordQualityBadge">{{ qualityLabel }}</span>
   </div>
 </template>
 
@@ -68,13 +68,13 @@ function handleCardClick(): void {
 </script>
 
 <style scoped>
-.chord-card {
+.chordCard {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 2px;
   padding: 10px 14px;
-  background: var(--surface-raised);
+  background: var(--surfaceRaised);
   border: 1px solid var(--border);
   border-radius: 8px;
   color: var(--text);
@@ -92,7 +92,7 @@ function handleCardClick(): void {
 }
 
 /* Checkbox container layout */
-.checkbox-wrapper {
+.checkboxWrapper {
   z-index: 2;
   display: flex;
   align-items: center;
@@ -101,7 +101,7 @@ function handleCardClick(): void {
   cursor: default;
 }
 
-.chord-card::before {
+.chordCard::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -110,31 +110,31 @@ function handleCardClick(): void {
   transition: opacity 0.2s;
 }
 
-.chord-card:hover {
+.chordCard:hover {
   border-color: var(--accent);
-  background: var(--accent-dim);
+  background: var(--accentDim);
   transform: translateY(-1px);
-  box-shadow: 0 4px 16px var(--accent-glow);
+  box-shadow: 0 4px 16px var(--accentGlow);
 }
 
-.chord-card:active {
+.chordCard:active {
   transform: translateY(0px) scale(0.97);
 }
 
-.chord-card.is-playing,
-.chord-card.is-progression-active {
+.chordCard.isPlaying,
+.chordCard.isProgressionActive {
   border-color: var(--accent);
-  background: var(--accent-dim);
+  background: var(--accentDim);
   box-shadow:
     0 0 0 1px var(--accent),
-    0 4px 20px var(--accent-glow);
+    0 4px 20px var(--accentGlow);
   animation: chord-pulse 0.4s ease-out;
 }
 
-@keyframes chord-pulse {
+@keyframes chordPulse {
   0% {
     box-shadow:
-      0 0 0 0 var(--accent-glow),
+      0 0 0 0 var(--accentGlow),
       0 0 0 1px var(--accent);
   }
   50% {
@@ -145,58 +145,58 @@ function handleCardClick(): void {
   100% {
     box-shadow:
       0 0 0 1px var(--accent),
-      0 4px 20px var(--accent-glow);
+      0 4px 20px var(--accentGlow);
   }
 }
 
-.chord-roman {
-  font-family: var(--font-mono);
+.chordRoman {
+  font-family: var(--fontMono);
   font-size: 10px;
   font-weight: 500;
-  color: var(--text-muted);
+  color: var(--textMuted);
   letter-spacing: 0.05em;
   transition: color 0.15s;
 }
 
-.chord-card.is-playing .chord-roman,
-.chord-card:hover .chord-roman {
+.chordCard.isPlaying .chordRoman,
+.chordCard:hover .chordRoman {
   color: var(--accent);
 }
 
-.chord-name {
-  font-family: var(--font-mono);
+.chordName {
+  font-family: var(--fontMono);
   font-size: 15px;
   font-weight: 600;
   color: var(--text);
   white-space: nowrap;
 }
 
-.chord-quality-badge {
+.chordQualityBadge {
   font-size: 9px;
-  font-family: var(--font-mono);
-  color: var(--text-muted);
-  background: var(--border-subtle);
+  font-family: var(--fontMono);
+  color: var(--textMuted);
+  background: var(--borderSubtle);
   padding: 1px 5px;
   border-radius: 3px;
   letter-spacing: 0.03em;
 }
 
 /* Quality-based accent colors */
-.quality-minor .chord-roman {
+.qualityMinor .chordRoman {
   color: #7a9ec5;
 }
-.quality-minor:hover .chord-roman,
-.quality-minor.is-playing .chord-roman {
+.qualityMinor:hover .chordRoman,
+.qualityMinor.isPlaying .chordRoman {
   color: #7ab8f5;
 }
-.quality-dim .chord-roman {
+.qualityDim .chordRoman {
   color: #c57a7a;
 }
-.quality-dim:hover .chord-roman,
-.quality-dim.is-playing .chord-roman {
+.qualityDim:hover .chordRoman,
+.qualityDim.isPlaying .chordRoman {
   color: #f57a7a;
 }
-.quality-aug .chord-roman {
+.qualityAug .chordRoman {
   color: #9e7ac5;
 }
 </style>

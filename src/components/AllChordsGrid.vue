@@ -1,9 +1,9 @@
 <template>
-  <div class="all-chords">
-    <div class="section-controls">
-      <div class="filter-row">
-        <span class="filter-label">Chord type</span>
-        <div class="type-pills">
+  <div class="allChords">
+    <div class="sectionControls">
+      <div class="filterRow">
+        <span class="filterLabel">Chord type</span>
+        <div class="typePills">
           <button
             v-for="(ct, key) in CHORD_TYPES"
             :key="key"
@@ -17,20 +17,20 @@
       </div>
     </div>
 
-    <div class="chord-grid">
+    <div class="chordGrid">
       <div
         v-for="root in NOTES"
         :key="root"
-        class="grid-chord"
-        :class="{ 'is-playing': playingChordId === `${root}${activeType}` }"
+        class="gridChord"
+        :class="{ isPlaying: playingChordId === `${root}${activeType}` }"
         @click="handleClick(root)"
         role="button"
         tabindex="0"
         @keydown.enter="handleClick(root)"
         :title="`${root}${CHORD_TYPES[activeType].label}`"
       >
-        <span class="grid-chord-name">{{ root }}{{ CHORD_TYPES[activeType].label }}</span>
-        <span class="grid-chord-notes">{{ getChordNotes(root) }}</span>
+        <span class="gridChordName">{{ root }}{{ CHORD_TYPES[activeType].label }}</span>
+        <span class="gridChordNotes">{{ getChordNotes(root) }}</span>
       </div>
     </div>
   </div>
@@ -55,36 +55,36 @@ function handleClick(root: (typeof NOTES)[number]): void {
 </script>
 
 <style scoped>
-.all-chords {
+.allChords {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-.section-controls {
+.sectionControls {
   background: var(--surface);
-  border: 1px solid var(--border-subtle);
+  border: 1px solid var(--borderSubtle);
   border-radius: 10px;
   padding: 14px 16px;
 }
 
-.filter-row {
+.filterRow {
   display: flex;
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
 }
 
-.filter-label {
+.filterLabel {
   font-size: 11px;
   font-weight: 600;
-  color: var(--text-muted);
+  color: var(--textMuted);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   white-space: nowrap;
 }
 
-.type-pills {
+.typePills {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
@@ -95,8 +95,8 @@ function handleClick(root: (typeof NOTES)[number]): void {
   background: transparent;
   border: 1px solid var(--border);
   border-radius: 20px;
-  color: var(--text-muted);
-  font-family: var(--font-mono);
+  color: var(--textMuted);
+  font-family: var(--fontMono);
   font-size: 11px;
   font-weight: 500;
   transition: all 0.15s;
@@ -115,19 +115,19 @@ function handleClick(root: (typeof NOTES)[number]): void {
 }
 
 /* Chord grid */
-.chord-grid {
+.chordGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
   gap: 8px;
 }
 
-.grid-chord {
+.gridChord {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 4px;
   padding: 12px 8px;
-  background: var(--surface-raised);
+  background: var(--surfaceRaised);
   border: 1px solid var(--border);
   border-radius: 8px;
   cursor: pointer;
@@ -135,29 +135,29 @@ function handleClick(root: (typeof NOTES)[number]): void {
   text-align: center;
 }
 
-.grid-chord:hover {
+.gridChord:hover {
   border-color: var(--accent);
-  background: var(--accent-dim);
+  background: var(--accentDim);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px var(--accent-glow);
+  box-shadow: 0 4px 12px var(--accentGlow);
 }
 
-.grid-chord:active {
+.gridChord:active {
   transform: scale(0.96);
 }
 
-.grid-chord.is-playing {
+.gridChord.isPlaying {
   border-color: var(--accent);
-  background: var(--accent-dim);
+  background: var(--accentDim);
   box-shadow:
     0 0 0 1px var(--accent),
-    0 4px 20px var(--accent-glow);
-  animation: chord-pulse 0.4s ease-out;
+    0 4px 20px var(--accentGlow);
+  animation: chordPulse 0.4s ease-out;
 }
 
-@keyframes chord-pulse {
+@keyframes chordPulse {
   0% {
-    box-shadow: 0 0 0 0 var(--accent-glow);
+    box-shadow: 0 0 0 0 var(--accentGlow);
   }
   50% {
     box-shadow: 0 0 0 8px transparent;
@@ -165,21 +165,21 @@ function handleClick(root: (typeof NOTES)[number]): void {
   100% {
     box-shadow:
       0 0 0 1px var(--accent),
-      0 4px 20px var(--accent-glow);
+      0 4px 20px var(--accentGlow);
   }
 }
 
-.grid-chord-name {
-  font-family: var(--font-mono);
+.gridChordName {
+  font-family: var(--fontMono);
   font-size: 15px;
   font-weight: 600;
   color: var(--text);
 }
 
-.grid-chord-notes {
-  font-family: var(--font-mono);
+.gridChordNotes {
+  font-family: var(--fontMono);
   font-size: 9px;
-  color: var(--text-muted);
+  color: var(--textMuted);
   letter-spacing: 0.02em;
 }
 </style>

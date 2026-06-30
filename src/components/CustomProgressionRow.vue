@@ -8,10 +8,10 @@
     :bpm="props.bpm"
     @confirmProgression="($event) => emit('confirmProgression', $event)"
   >
-    <template #progression-title>
-      <div :class="styles['progression-title-group']">
-        <span :class="styles['scale-root-note']">{{ rootNote }}</span>
-        <span :class="styles['scale-type']">{{ scaleLabel }}</span>
+    <template #progressionTitle>
+      <div :class="styles['progressionTitleGroup']">
+        <span :class="styles['scaleRootNote']">{{ rootNote }}</span>
+        <span :class="styles['scaleType']">{{ scaleLabel }}</span>
       </div>
     </template>
   </BaseProgressionRow>

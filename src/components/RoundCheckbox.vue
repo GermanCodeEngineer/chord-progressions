@@ -12,13 +12,13 @@ function toggle(): void {
 </script>
 
 <template>
-  <div class="circle-checkbox" :class="{ 'is-checked': modelValue }" @click="toggle">
+  <div class="circleCheckbox" :class="{ 'isChecked': modelValue }" @click="toggle">
     <span v-if="modelValue" class="checkmark">✓</span>
   </div>
 </template>
 
 <style scoped>
-.circle-checkbox {
+.circleCheckbox {
   width: 24px;
   height: 24px;
   border: 2px solid #ccc;
@@ -32,11 +32,11 @@ function toggle(): void {
   user-select: none;
 }
 
-.circle-checkbox:hover {
+.circleCheckbox:hover {
   border-color: #42b883;
 }
 
-.circle-checkbox.is-checked {
+.circleCheckbox.isChecked {
   background-color: #42b883;
   border-color: #42b883;
 }
