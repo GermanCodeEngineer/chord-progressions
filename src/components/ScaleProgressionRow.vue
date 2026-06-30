@@ -107,11 +107,11 @@ import { NOTES, SCALE_INTERVALS, DEFAULT_BPM, type Chord } from "../musicTheory.
 
 const props = withDefaults(
   defineProps<{
-    rootNote: (typeof NOTES)[number]
-    scaleType: keyof typeof SCALE_INTERVALS
-    scaleLabel: string
-    chords: Chord[]
-    bpm?: number
+    rootNote: (typeof NOTES)[number],
+    scaleType: keyof typeof SCALE_INTERVALS,
+    scaleLabel: string,
+    chords: Chord[],
+    bpm?: number,
   }>(),
   {
     bpm: DEFAULT_BPM,
@@ -123,7 +123,7 @@ const emit = defineEmits<{
 
 const buttonsSelectedState = ref<boolean[]>(Array(props.chords.length).fill(true))
 
-const thisProgressionId = computed<string>(() => `${props.rootNote}-${props.progression-type}`)
+const thisProgressionId = computed<string>(() => `${props.rootNote}-${props.scaleType}`)
 const activeProgressionId = ref<string | null>(null)
 const inSelectionMode = ref<boolean>(false)
 

@@ -107,11 +107,11 @@ import { NOTES, SCALE_INTERVALS, DEFAULT_BPM, type Chord } from "../musicTheory.
 
 const props = withDefaults(
   defineProps<{
-    rootNote: (typeof NOTES)[number]
-    scaleType: keyof typeof SCALE_INTERVALS
-    scaleLabel: string
-    chords: Chord[]
-    bpm?: number
+    rootNote: (typeof NOTES)[number],
+    scaleType: keyof typeof SCALE_INTERVALS,
+    scaleLabel: string,
+    chords: Chord[],
+    bpm?: number,
   }>(),
   {
     bpm: DEFAULT_BPM,
