@@ -259,7 +259,7 @@ export function getChordFreqs(
 export function computeChordNotes(chord: CustomChord): NoteFreq[] {
   const base = getChordFreqs(chord.root, chord.quality)
 
-  let notes = base.map(n => {
+  const notes = base.map(n => {
     const idx = (NOTES.indexOf(n.note) + chord.transpose + 12) % 12
     return {
       note: NOTES[idx]!,

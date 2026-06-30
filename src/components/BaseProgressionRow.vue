@@ -118,7 +118,7 @@ const props = withDefaults(
   },
 )
 const emit = defineEmits<{
-  "confirm-progression": [chords: Chord[]]
+  confirmProgression: [chords: Chord[]]
 }>()
 
 const buttonsSelectedState = ref<boolean[]>(Array(props.chords.length).fill(true))
@@ -155,7 +155,7 @@ function confirmSelection(): void {
 
   const selectedChords = props.chords.filter((_, i) => buttonsSelectedState.value[i])
 
-  emit("confirm-progression", selectedChords)
+  emit("confirmProgression", selectedChords)
 
   buttonsSelectedState.value = Array(props.chords.length).fill(true)
   inSelectionMode.value = false

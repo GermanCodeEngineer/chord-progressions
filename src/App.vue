@@ -149,12 +149,12 @@ function createProgressionFromSelection(chords: Chord[]) {
           <ScaleProgressionRow
             v-for="row in scaleRows"
             :key="row.scaleType"
-            :root-note="selectedRoot"
-            :scale-type="row.scaleType"
-            :scale-label="row.scaleLabel"
+            :rootNote="selectedRoot"
+            :scaleType="row.scaleType"
+            :scaleLabel="row.scaleLabel"
             :chords="row.chords"
             :bpm="bpm"
-            @confirm-progression="createProgressionFromSelection"
+            @confirmProgression="createProgressionFromSelection"
           />
         </div>
       </section>
@@ -181,12 +181,12 @@ function createProgressionFromSelection(chords: Chord[]) {
           <CustomProgressionRow
             v-for="row in scaleRows"
             :key="row.scaleType"
-            :root-note="selectedRoot"
-            :scale-type="row.scaleType"
-            :scale-label="row.scaleLabel"
+            :rootNote="selectedRoot"
+            :scaleType="row.scaleType"
+            :scaleLabel="row.scaleLabel"
             :chords="row.chords"
             :bpm="bpm"
-            @confirm-progression="createProgressionFromSelection"
+            @confirmProgression="createProgressionFromSelection"
           />
         </div>
       </section>
@@ -227,8 +227,8 @@ function createProgressionFromSelection(chords: Chord[]) {
 
     <SettingsModal
       v-model="showSettings"
-      v-model:visible-scales="visibleScales"
-      v-model:selected-root="selectedRoot"
+      v-model:visibleScales="visibleScales"
+      v-model:selectedRoot="selectedRoot"
       v-model:bpm="bpm"
     />
 
