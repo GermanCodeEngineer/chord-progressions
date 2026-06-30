@@ -1,0 +1,119 @@
+/* Fallback contextual variables if not declared globally */
+/* TODO: remove :root */
+:root {
+  --success: #2e7d32;
+  --danger: #d32f2f;
+  --danger-dim: rgba(211, 47, 47, 0.1);
+}
+
+.progression-row {
+  padding: 20px 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.progression-row:last-child {
+  border-bottom: none;
+}
+
+.progression-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  gap: 12px;
+}
+
+.progression-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Base button properties shared across all state controls */
+.play-progression-btn,
+.derive-progression-btn,
+.confirm-selection-btn,
+.cancel-selection-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+/* Individualized Hover States (Fixed Orange Hover Leakage) */
+.play-progression-btn:hover,
+.derive-progression-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-dim);
+}
+
+.play-progression-btn.is-playing {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-dim);
+}
+
+/* Dedicated Green styling for Confirmation */
+.confirm-selection-btn {
+  border-color: var(--success, #2e7d32);
+  color: #fff;
+  background: var(--success, #2e7d32);
+}
+
+.confirm-selection-btn:hover {
+  background: color-mix(in srgb, var(--success, #2e7d32), #000 15%);
+  border-color: color-mix(in srgb, var(--success, #2e7d32), #000 15%);
+  color: #fff;
+}
+
+/* Dedicated Red styling for Cancellation */
+.cancel-selection-btn {
+  border-color: var(--danger, #d32f2f);
+  color: var(--danger, #d32f2f);
+  background: transparent;
+}
+
+.cancel-selection-btn:hover {
+  background: var(--danger-dim, rgba(211, 47, 47, 0.1));
+  color: var(--danger, #d32f2f);
+}
+
+.chords-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+/* Needed by ScaleProgressionRow and CustomProgressionRow */
+
+.progression-title-group {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.scale-root-note {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.scale-type {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}

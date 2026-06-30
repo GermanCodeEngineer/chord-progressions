@@ -1,16 +1,15 @@
 <template>
-  <div class="progression-row">
-    <div class="progression-header">
-      <div class="progression-title-group">
-        <span class="scale-root-note">{{ rootNote }}</span>
-        <span class="scale-type">{{ scaleLabel }}</span>
-      </div>
+  <div :class="styles['progression-row']">
+    <div :class="styles['progression-header']">
+      <slot name="progression-title"/>
 
-      <div class="progression-actions">
+      <div :class="styles['progression-actions']">
         <!-- TODO: Animation for derive progression and confirm/cancel -->
         <button
-          class="play-progression-btn"
-          :class="{ 'is-playing': isThisPlaying }"
+          :class="[
+            styles['play-progression-btn'],
+            isThisPlaying ? styles['is-playing'] : ''
+          ]"
           @click="handlePlayProgression"
           :title="isThisPlaying ? 'Stop progression' : 'Play all chords in sequence'"
         >
@@ -26,7 +25,7 @@
 
         <button
           v-if="!inSelectionMode"
-          class="derive-progression-btn"
+          :class="styles['derive-progression-btn']"
           @click="openSelectionMenu()"
           title="Select chords to derive a progression"
         >
@@ -43,7 +42,7 @@
 
         <button
           v-if="inSelectionMode"
-          class="confirm-selection-btn"
+          :class="styles['confirm-selection-btn']"
           @click="confirmSelection()"
           title="Confirm your selected progression"
         >
@@ -64,7 +63,7 @@
 
         <button
           v-if="inSelectionMode"
-          class="cancel-selection-btn"
+          :class="styles['cancel-selection-btn']"
           @click="cancelSelection()"
           title="Exit selection mode"
         >
@@ -85,7 +84,7 @@
       </div>
     </div>
 
-    <div class="chords-row">
+    <div :class="styles['chords-row']">
       <ChordButton
         v-for="(chord, i) in chords"
         :key="chord.id"
@@ -104,6 +103,7 @@ import { computed, ref } from "vue"
 import ChordButton from "./ChordButton.vue"
 import { playProgression, stopProgression, isPlaying, finishWithBase } from "../useAudio.ts"
 import { NOTES, SCALE_INTERVALS, DEFAULT_BPM, type Chord } from "../musicTheory.ts"
+import styles from "./progressions.module.css"
 
 const props = withDefaults(
   defineProps<{
@@ -166,122 +166,3 @@ function cancelSelection(): void {
   inSelectionMode.value = false
 }
 </script>
-
-<style scoped>
-/* Fallback contextual variables if not declared globally */
-:root {
-  --success: #2e7d32;
-  --danger: #d32f2f;
-  --danger-dim: rgba(211, 47, 47, 0.1);
-}
-
-.progression-row {
-  padding: 20px 0;
-  border-bottom: 1px solid var(--border-subtle);
-}
-
-.progression-row:last-child {
-  border-bottom: none;
-}
-
-.progression-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
-  gap: 12px;
-}
-
-.progression-title-group {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-}
-
-.progression-actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.scale-root-note {
-  font-family: var(--font-mono);
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--text);
-}
-
-.scale-type {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text-muted);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-/* Base button properties shared across all state controls */
-.play-progression-btn,
-.derive-progression-btn,
-.confirm-selection-btn,
-.cancel-selection-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 14px;
-  background: transparent;
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  color: var(--text-muted);
-  font-size: 12px;
-  font-weight: 500;
-  transition: all 0.15s ease;
-  white-space: nowrap;
-  cursor: pointer;
-}
-
-/* Individualized Hover States (Fixed Orange Hover Leakage) */
-.play-progression-btn:hover,
-.derive-progression-btn:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: var(--accent-dim);
-}
-
-.play-progression-btn.is-playing {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: var(--accent-dim);
-}
-
-/* Dedicated Green styling for Confirmation */
-.confirm-selection-btn {
-  border-color: var(--success, #2e7d32);
-  color: #fff;
-  background: var(--success, #2e7d32);
-}
-
-.confirm-selection-btn:hover {
-  background: color-mix(in srgb, var(--success, #2e7d32), #000 15%);
-  border-color: color-mix(in srgb, var(--success, #2e7d32), #000 15%);
-  color: #fff;
-}
-
-/* Dedicated Red styling for Cancellation */
-.cancel-selection-btn {
-  border-color: var(--danger, #d32f2f);
-  color: var(--danger, #d32f2f);
-  background: transparent;
-}
-
-.cancel-selection-btn:hover {
-  background: var(--danger-dim, rgba(211, 47, 47, 0.1));
-  color: var(--danger, #d32f2f);
-}
-
-.chords-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: flex-start;
-}
-</style>
